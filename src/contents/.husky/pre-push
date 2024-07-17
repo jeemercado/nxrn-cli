@@ -1,0 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo -e "===\n>> Checking branch name..."
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+PROTECTED_BRANCHES="^(main|staging|development)$"
+BRANCH_COMMAND=$(ps -ocommand= -p $PPID | awk '{print $NF}')
+
+if [[ "$BRANCH" =~ $PROTECTED_BRANCHES ]]
+then
+  echo -e "\n🚫 Cannot push to remote $BRANCH branch, please create your own branch and create a PR." && exit 1
+fi
+
+echo -e ">> Finished checking branch name.\n==="
+

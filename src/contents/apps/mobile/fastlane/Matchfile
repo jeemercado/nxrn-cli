@@ -1,0 +1,5 @@
+git_url("")
+git_branch("main")
+git_basic_authorization(ENV['GITHUB_API_TOKEN'])
+storage_mode("git")
+type("appstore")

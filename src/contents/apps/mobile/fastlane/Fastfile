@@ -1,0 +1,303 @@
+
+require 'fileutils'
+
+def app_name = ""
+
+def delete_gradle_temp()
+    UI.message("Deleting Gradle Temp...")
+    directory_path = '../android/.gradle'
+    if Dir.exist?(directory_path)
+        FileUtils.rm_rf(directory_path)
+        UI.success("Successfully deleted Gradle Temp at '#{directory_path}'")
+    else
+        UI.message("Directory '#{directory_path}' does not exist.")
+    end
+end
+
+def to_boolean(value)
+    return true if value =~ /^(true|t|yes|y|1)$/i
+    return false if value =~ /^(false|f|no|n|0)$/i
+    return false if value.nil? || value == ''
+    raise ArgumentError.new("Invalid value for boolean: #{value}")
+end
+
+def get_timestamp()
+    build_number = Time.now.to_i
+    UI.success("Using build number: #{build_number}")
+    return build_number
+end
+
+def appstore_api_key()
+    begin
+        api_key = app_store_connect_api_key(
+            key_id: ENV['FASTLANE_APPSTORE_KEY_ID'],
+            issuer_id: ENV['FASTLANE_APPSTORE_ISSUER_ID'],
+            key_content: ENV['FASTLANE_APPSTORE_KEY_CONTENT'],
+            duration: 1200,
+            in_house: false,
+        )
+        UI.success("Successfully connected to Appstore API Key: #{api_key}")
+    rescue => exception
+        UI.error(exception)
+    end
+    return api_key
+end
+
+def get_appstore_build_number(api_key)
+    build_number = 1
+    begin
+        build_number = latest_testflight_build_number(
+            api_key: api_key,
+            app_identifier: ENV['FASTLANE_APP_IDENTIFIER'],
+        ).to_i + 1
+        UI.success("Successfully connected to Appstore TestFlight build_num: #{build_number}")
+    rescue => exception
+        UI.error(exception)
+    end
+    return build_number
+end
+
+def get_appstore_external_testers()
+    external_destinations = (ENV['FASTLANE_APPSTORE_EXTERNAL_DESTINATIONS'] || "").split(',').map(&:strip)
+    UI.message("External Testers Found: #{external_destinations}")
+
+    return external_destinations
+end
+
+def get_certificates(api_key)
+    begin
+        # Get Signing Information (Ceritificates, Profiles, etc.)
+        UI.message("Getting Signing Information...")
+        match(
+            api_key: api_key,
+            app_identifier: ENV['FASTLANE_APP_IDENTIFIERS'],
+            readonly: false,
+            type: "development",
+            verbose: true,
+            force_for_new_devices: true,
+            generate_apple_certs: false,
+        )
+        match(
+            api_key: api_key,
+            app_identifier: ENV['FASTLANE_APP_IDENTIFIERS'],
+            readonly: false,
+            type: "appstore",
+            verbose: true,
+            generate_apple_certs: false,
+        )
+    rescue => exception
+        UI.error(exception)
+    end
+end
+
+def setup_ios()
+    skip_docs()
+          
+    #Setup CI
+    UI.message("Setting up CI for match...")
+    setup_ci()
+
+    # Get Build Information
+    UI.message("Getting AppStore Metadata...")
+    api_key = appstore_api_key()
+    build_number = get_appstore_build_number(api_key)
+
+    increment_build_number(
+        build_number: build_number.to_s,
+        xcodeproj: "./ios/#{app_name}.xcodeproj",
+    )
+
+    # Get Signing Information (Ceritificates, Profiles, etc.)
+    UI.message("Getting Signing Information...")
+    get_certificates(api_key)
+
+    return build_number
+end
+
+def setup_android() 
+    skip_docs()
+
+    # Clean Gradle Temp
+    delete_gradle_temp()
+
+    # Get Build Information
+    build_number = get_timestamp()
+
+    # Build Android App
+    UI.message("Cleaning build artifacts...")
+    gradle(
+        project_dir: './android',
+        task: 'clean', 
+    )
+
+    # Increment version code
+    UI.message("Incrementing version code...")
+    increment_version_code(
+        gradle_file_path: "./android/app/build.gradle",
+        version_code: build_number
+    )
+end
+
+def ios_build_ipa(configuration, scheme)
+     # Build iOS App
+     UI.message("Building iOS app...")
+     gym(
+         clean: true, 
+         configuration: "#{configuration}", 
+         export_method: "app-store",
+         output_directory: "./build", 
+         output_name: "#{app_name}-#{scheme}.ipa",
+         scheme: "#{scheme}", 
+         workspace: "./ios/#{app_name}.xcworkspace",
+     )
+end
+
+def upload_dysm(scheme, firebase_env = "Dev")
+    # Upload dSYM to Crashlytics
+    UI.message("Uploading dSYM to Firebase Crashlytics...")
+    upload_symbols_to_crashlytics(
+        binary_path: "./ios/Pods/FirebaseCrashlytics/upload-symbols",
+        dsym_path: "./build/#{app_name}-#{scheme}.app.dSYM.zip",
+        gsp_path: "./ios/Firebase/#{firebase_env}/GoogleService-Info.plist",
+    )
+end
+
+def android_build_bundle(flavor)
+    UI.message("Building app...")
+    gradle(
+        build_type: 'Release', 
+        flavor: flavor, 
+        project_dir: './android', 
+        task: 'bundle', 
+    )
+end
+
+def android_build_apk(flavor)
+    UI.message("Building app...")
+    gradle(
+        build_type: 'Release', 
+        flavor: flavor, 
+        project_dir: './android', 
+        task: 'assemble', 
+    )
+end
+
+def publish_ipa(build_number, scheme)
+    api_key = appstore_api_key()
+
+    # Upload to App Store TestFlight
+    UI.message("Uploading build to AppStore TestFlight...")
+    external_destinations = get_appstore_external_testers()
+
+    if external_destinations.length > 0
+        UI.message("Distributing to external Testers: #{external_destinations}")
+        upload_to_testflight(
+            api_key: api_key,
+            build_number: build_number.to_s,
+            changelog: ENV["FASTLANE_CHANGELOGS"],
+            distribute_external: true,
+            distribute_only: false,
+            ipa: "./build/#{app_name}-#{scheme}.ipa",
+            groups: external_destinations,
+            skip_waiting_for_build_processing: false,
+        )
+    else
+        UI.message("No external testers to distribute to")
+        upload_to_testflight(
+            api_key: api_key,
+            build_number: build_number.to_s,
+            changelog: ENV["FASTLANE_CHANGELOGS"],
+            ipa: "./build/#{app_name}-#{scheme}.ipa",
+            skip_waiting_for_build_processing: true,
+        )
+    end
+end
+
+def publish_bundle(flavor)
+    UI.message("Uploading aab build to Firebase...")
+    release = firebase_app_distribution(
+        service_credentials_file: to_boolean(ENV['IS_CI']) ? '/tmp/google-service-account-key.json' : nil,
+        app: ENV['FASTLANE_FIREBASE_APP_ID'],
+        android_artifact_type: "AAB",
+        android_artifact_path: "./android/app/build/outputs/bundle/#{flavor}Release/app-#{flavor}-release.aab",
+        release_notes: ENV["FASTLANE_CHANGELOGS"],
+        groups: ENV["FASTLANE_FIREBASE_GROUP_TESTERS"]
+    )
+end
+
+def publish_apk(flavor)
+    UI.message("Uploading apk build to Firebase...")
+    release = firebase_app_distribution(
+        service_credentials_file: to_boolean(ENV['IS_CI']) ? '/tmp/google-service-account-key.json' : nil,
+        app: ENV['FASTLANE_FIREBASE_APP_ID'],
+        android_artifact_type: "APK",
+        android_artifact_path: "./android/app/build/outputs/apk/#{flavor}/release/app-#{flavor}-release.apk",
+        release_notes: ENV["FASTLANE_CHANGELOGS"],
+        groups: ENV["FASTLANE_FIREBASE_GROUP_TESTERS"]
+    )
+end
+
+platform :android do 
+    desc "Build Android (Dev Server)"
+    lane :dev do 
+        begin
+            flavor = 'dev'
+            setup_android()
+            android_build_apk(flavor)
+            publish_apk(flavor)
+        rescue => exception
+            UI.error(exception)
+        end
+    end
+
+    desc "Build Android (Production Server)"
+    lane :prod do 
+        begin
+            flavor = 'production'
+            setup_android()
+            android_build_bundle(flavor)
+            publish_bundle(flavor)
+        rescue => exception
+            UI.error(exception)
+        end
+    end
+end
+
+platform :ios do
+    lane :certificates do
+        skip_docs()
+
+        api_key = appstore_api_key()
+
+        # Get Signing Information (Ceritificates, Profiles, etc.)
+        UI.message("Getting Signing Information...")
+        get_certificates(api_key)
+    end
+
+    desc "Build iOS (Dev Server)"
+    lane :dev do 
+        begin
+            build_number = setup_ios()
+            ios_build_ipa("Dev.Release", "Dev")
+            # (Optional) Uncomment if you want to upload dSYM to Firebase Crashlytics
+            # upload_dysm("Dev", "Dev")
+            publish_ipa(build_number, "Dev")
+        rescue => exception
+            UI.error(exception)
+        end
+    end
+
+    desc "Build iOS (Production Server)"
+    lane :prod do 
+        begin  
+            build_number = setup_ios()
+            ios_build_ipa("Release", "Release")
+            # (Optional) Uncomment if you want to upload dSYM to Firebase Crashlytics
+            # upload_dysm("Release", "Prod")
+            publish_ipa(build_number, "Release")
+        rescue => exception
+            UI.error(exception)
+        end
+    end
+end
+
