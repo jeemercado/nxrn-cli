@@ -16,6 +16,7 @@
     "start": "./src/index.js",
     "build": "esbuild src/index.js --platform=node --bundle --outdir=lib --minify --analyze",
     "prepublish": "npm run build",
+    "example": "npx nxrn create example",
     "relink": "npm unlink nxrn && npm run prepublish && npm link nxrn",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

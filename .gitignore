@@ -144,3 +144,4 @@ web-build/
 !dev.keystore
 !staging.keystore
 !production.keystore
+example
