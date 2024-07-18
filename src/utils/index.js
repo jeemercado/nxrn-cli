@@ -1,22 +1,13 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
-import contents from '../contents/index.js';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 export function getDirName() {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
   return __dirname;
 }
 
 export const executeCommand = (dir, command) => {
   execSync(`cd ${dir} && ${command}`, { stdio: 'inherit' });
-};
-
-export const replaceFileFromContents = (dir, content) => {
-  fs.writeFileSync(`${dir}`, contents[content]);
 };
 
 export const copyFile = (destinationPath, fileName) => {
@@ -48,28 +39,26 @@ export const removeDir = (dir) => {
       return;
     }
   });
-}
-
-
+};
 
 export const addScriptsInRootPackageJson = (dir) => {
   const scripts = {
-    "android:connect": "cd apps/mobile && npm run android:connect",
-    "check-env:mobile": "./check-env.sh apps/mobile/.env apps/mobile/.env.template",
-    "clean": "./clean-generated-outputs.sh",
-    "create-env": "printenv > ",
-    "lint:all": "npx nx run-many -t lint -p mobile --parallel=1 --skip-nx-cache",
-    "lint:mobile": "npx nx run mobile:lint --skip-nx-cache",
-    "mobile-android": "cd apps/mobile && npm run run-android",
-    "mobile-ios": "cd apps/mobile && npm run run-ios",
-    "prepare": "husky install",
-    "serve:mobile": "cd apps/mobile && npm start",
-    "serve:all": "npx nx run-many -t serve -p mobile --parallel=1 --skip-nx-cache",
-    "xcode": "cd apps/mobile && npm run xcode",
-    "setup-fastlane": "cd apps/mobile && npm run setup-fastlane",
-    "deploy-android:dev": "cd apps/mobile && npm run deploy-android:dev",
-    "deploy-ios:dev": "cd apps/mobile && npm run deploy-ios:dev",
-    "ios-certificates": "cd apps/mobile && npm run ios-certificates"
+    'android:connect': 'cd apps/mobile && npm run android:connect',
+    'check-env:mobile': './check-env.sh apps/mobile/.env apps/mobile/.env.template',
+    clean: './clean-generated-outputs.sh',
+    'create-env': 'printenv > ',
+    'lint:all': 'npx nx run-many -t lint -p mobile --parallel=1 --skip-nx-cache',
+    'lint:mobile': 'npx nx run mobile:lint --skip-nx-cache',
+    'mobile-android': 'cd apps/mobile && npm run run-android',
+    'mobile-ios': 'cd apps/mobile && npm run run-ios',
+    prepare: 'husky install',
+    'serve:mobile': 'cd apps/mobile && npm start',
+    'serve:all': 'npx nx run-many -t serve -p mobile --parallel=1 --skip-nx-cache',
+    xcode: 'cd apps/mobile && npm run xcode',
+    'setup-fastlane': 'cd apps/mobile && npm run setup-fastlane',
+    'deploy-android:dev': 'cd apps/mobile && npm run deploy-android:dev',
+    'deploy-ios:dev': 'cd apps/mobile && npm run deploy-ios:dev',
+    'ios-certificates': 'cd apps/mobile && npm run ios-certificates',
   };
 
   const packageJsonPath = path.join(dir, 'package.json');

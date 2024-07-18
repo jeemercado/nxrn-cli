@@ -1,20 +1,20 @@
 {
   "name": "nx-react-native-cli",
-  "version": "1.0.4",
+  "version": "1.0.9",
   "description": "A react native starter (with NX) cli script",
-  "main": "./src/index.js",
   "type": "module",
   "files": [
     "lib",
+    "contents",
     "README.md",
     "package.json"
   ],
   "bin": {
-    "nxrn": "./src/index.js"
+    "nxrn": "./lib/index.cjs"
   },
   "scripts": {
     "start": "./src/index.js",
-    "build": "esbuild src/index.js --platform=node --bundle --outdir=lib --minify --analyze",
+    "build": "rm -rf lib && esbuild src/index.js --format=cjs --platform=node --bundle --outfile=lib/index.cjs --minify --analyze",
     "prepublish": "npm run build",
     "example": "npx nxrn create example",
     "relink": "npm unlink nxrn && npm run prepublish && npm link nxrn",

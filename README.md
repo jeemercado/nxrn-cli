@@ -24,6 +24,6 @@ This NPM library package allows you to effortlessly generate a Nx workspace with
 
 <h2 id="🛠-usage">🛠 Usage</h2>
 <p>Generate a new Nx workspace with the React Native preset:</p>
-<pre><code class="language-bash">npx nx-react-native-cli nxrn create
+<pre><code class="language-bash">npx nx-react-native-cli@latest create
 </code></pre>
 
