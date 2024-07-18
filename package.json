@@ -1,6 +1,6 @@
 {
   "name": "nx-react-native-cli",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "A react native starter (with NX) cli script",
   "type": "module",
   "files": [
@@ -17,7 +17,7 @@
     "build": "rm -rf lib && esbuild src/index.js --format=cjs --platform=node --bundle --outfile=lib/index.cjs --minify --analyze",
     "prepublish": "npm run build",
     "example": "npx nxrn create example",
-    "relink": "npm unlink nxrn && npm run prepublish && npm link nxrn",
+    "relink": "npm unlink nxrn && npm run prepublish && npm link",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
