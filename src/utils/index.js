@@ -11,7 +11,7 @@ export const executeCommand = (dir, command) => {
 };
 
 export const copyFile = (destinationPath, fileName) => {
-  const sourcePath = path.join(getDirName(), `../contents/${fileName}`);
+  const sourcePath = path.join(getDirName(), `../templates/${fileName}`);
 
   fs.copyFile(sourcePath, destinationPath, (err) => {
     if (err) {
@@ -22,7 +22,7 @@ export const copyFile = (destinationPath, fileName) => {
 };
 
 export const copyDir = (destinationPath, fileName) => {
-  const sourcePath = path.join(getDirName(), `../contents/${fileName}`);
+  const sourcePath = path.join(getDirName(), `../templates/${fileName}`);
 
   fs.cpSync(sourcePath, destinationPath, { recursive: true }, (err) => {
     if (err) {
