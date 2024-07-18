@@ -78,14 +78,14 @@ program
     copyFile(`${workspaceDirectory}/.prettierignore`, '.prettierignore');
     copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json');
     copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json');
-    copyFile(`${workspaceDirectory}/.ignorefile`, '.gitignore');
+    copyFile(`${workspaceDirectory}/.gitignore`, '.ignorefile');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version');
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`);
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`);
     removeDir(`${workspaceDirectory}/apps/mobile/src`);
     copyDir(`${workspaceDirectory}/apps`, `apps`);
-    copyDir(`${workspaceDirectory}/ignorefile`, `apps/mobile/.gitignore`);
+    copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `.ignorefile`);
     executeCommand(
       workspaceDirectory,
       `keytool -genkey -keystore ${workspaceDirectory}/apps/mobile/android/app/dev.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias dev -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" -storepass development -keypass development`,
