@@ -42,7 +42,10 @@
     "run-android": {
       "executor": "@nx/react-native:run-android",
       "dependsOn": ["ensure-symlink"],
-      "options": {}
+      "options": {
+        "mode": "debug",
+        "tasks": "installDevDebug"
+      }
     },
     "build-android": {
       "executor": "@nx/react-native:build-android",

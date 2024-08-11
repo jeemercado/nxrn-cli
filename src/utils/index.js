@@ -43,6 +43,7 @@ export const removeDir = (dir) => {
 
 export const addScriptsInRootPackageJson = (dir) => {
   const scripts = {
+    android: 'npx nx run-android mobile --skip-nx-cache',
     'android:connect': 'cd apps/mobile && npm run android:connect',
     'check-env:mobile': './check-env.sh apps/mobile/.env apps/mobile/.env.template',
     clean: './clean-generated-outputs.sh',
@@ -60,12 +61,16 @@ export const addScriptsInRootPackageJson = (dir) => {
     'deploy-ios:dev': 'cd apps/mobile && npm run deploy-ios:dev',
     'ios-certificates': 'cd apps/mobile && npm run ios-certificates',
   };
+  const dependencies = {
+    'react-native': '0.74.4',
+  };
 
   const packageJsonPath = path.join(dir, 'package.json');
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
   packageJson.scripts = { ...packageJson.scripts, ...scripts };
+  packageJson.dependencies = { ...packageJson.dependencies, ...dependencies };
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };

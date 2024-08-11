@@ -1,7 +1,7 @@
 
 require 'fileutils'
 
-def app_name = ""
+def app_name = "AppsMobile"
 
 def delete_gradle_temp()
     UI.message("Deleting Gradle Temp...")
@@ -291,10 +291,10 @@ platform :ios do
     lane :prod do 
         begin  
             build_number = setup_ios()
-            ios_build_ipa("Release", "Release")
+            ios_build_ipa("Release", app_name)
             # (Optional) Uncomment if you want to upload dSYM to Firebase Crashlytics
             # upload_dysm("Release", "Prod")
-            publish_ipa(build_number, "Release")
+            publish_ipa(build_number, app_name)
         rescue => exception
             UI.error(exception)
         end

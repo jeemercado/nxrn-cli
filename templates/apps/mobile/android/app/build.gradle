@@ -92,18 +92,24 @@ android {
             storePassword 'development'
             keyAlias 'dev'
             keyPassword 'development'
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
         dev {
             storeFile file('dev.keystore')
             storePassword 'development'
             keyAlias 'dev'
             keyPassword 'development'
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
         production {
             storeFile file('production.keystore')
             storePassword System.getenv("STORE_PASSWORD")
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
 

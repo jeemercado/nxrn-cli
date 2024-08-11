@@ -18,14 +18,8 @@ LogBox.ignoreLogs(['VirtualizedLists', 'onAnimatedValueUpdate']);
 
 enableFreeze(true);
 
-const MS_IN_S = 1000;
-const S_IN_A_MIN = 60;
-const MIN_IN_AN_HOUR = 60;
-const HOURS_IN_A_DAY = 24;
-const MS_IN_DAYS = MS_IN_S * S_IN_A_MIN * MIN_IN_AN_HOUR * HOURS_IN_A_DAY;
-
-const CACHE_TIME = MS_IN_DAYS * 1;
-const STALE_TIME = MS_IN_S * S_IN_A_MIN * MIN_IN_AN_HOUR; // 5 minutes
+const CACHE_TIME = 0;
+const STALE_TIME = 0;
 
 const queryClient = new QueryClient({
   defaultOptions: {
