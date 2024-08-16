@@ -3,6 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/mobile/src",
   "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project mobile --web",
   "targets": {
     "check-env": {
       "executor": "nx:run-script",
@@ -100,6 +102,5 @@
         "jestConfig": "apps/mobile/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

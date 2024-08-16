@@ -41,6 +41,15 @@ export const removeDir = (dir) => {
   });
 };
 
+export const removeFile = (filePath) => {
+  fs.rmSync(filePath, { recursive: true, force: true }, (err) => {
+    if (err) {
+      console.error(`Error removing file: ${err.message}`);
+      return;
+    }
+  });
+};
+
 export const addScriptsInRootPackageJson = (dir) => {
   const scripts = {
     android: 'npx nx run-android mobile --skip-nx-cache',
@@ -56,6 +65,7 @@ export const addScriptsInRootPackageJson = (dir) => {
     'serve:mobile': 'cd apps/mobile && npm start',
     'serve:all': 'npx nx run-many -t serve -p mobile --parallel=1 --skip-nx-cache',
     xcode: 'cd apps/mobile && npm run xcode',
+    'touch-xcode': 'cd apps/mobile && npm run touch-xcode',
     'setup-fastlane': 'cd apps/mobile && npm run setup-fastlane',
     'deploy-android:dev': 'cd apps/mobile && npm run deploy-android:dev',
     'deploy-ios:dev': 'cd apps/mobile && npm run deploy-ios:dev',

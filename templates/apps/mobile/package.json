@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    
     "android:connect": "adb reverse tcp:8081 tcp:8081",
     "start": "npx nx start mobile --skip-nx-cache",
     "run-ios": "npx nx run-ios mobile --skip-nx-cache --scheme=Dev --simulator='iPhone 13 (A96A9251-28D7-48B1-8F6A-20B6CCB8810B)'",
@@ -10,11 +11,13 @@
     "ensure-symlink": "npx nx ensure-symlink mobile",
     "sync-deps": "npx nx sync-deps mobile",
     "pod-install": "npx nx pod-install mobile",
-    "bundle:pod-install": "cd ios && bundle install && bundle exec pod install --repo-update",
+    "export-node-binary": "./export-node-binary.sh",
+    "bundle:pod-install": "cd ios && bundle install && bundle exec pod install --repo-update && npm run export-node-binary",
     "pre-build": "npm run ensure-symlink && npm run sync-deps && npm run pod-install",
     "list:ios-configurations": "cd ios && xcodebuild -list",
     "list:ios-devices": "xcrun xctrace list devices",
     "xcode": "open ios/AppsMobile.xcworkspace",
+    "touch-xcode": "cd ios && touch .xcode.env",
     "check-env:mobile": "cd ../.. && npm run check-env:mobile",
     "setup-fastlane": "rbenv local && bundle install && bundle update",
     "deploy-android:dev": "bundle exec fastlane android dev --env development",

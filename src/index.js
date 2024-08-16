@@ -11,6 +11,7 @@ import {
   copyFile,
   executeCommand,
   removeDir,
+  removeFile
 } from './utils/index.js';
 
 program
@@ -21,7 +22,8 @@ program
 program
   .command('create [workspace_name]')
   .description('create nx workspace with react-native')
-  .action(async (workspace_name) => {
+  .option('--fresh', 'Create a fresh project without copying template files')
+  .action(async (workspace_name, options) => {
     if (!workspace_name) {
       const result = await inquirer.prompt([
         {
@@ -33,6 +35,7 @@ program
 
       workspace_name = result.workspace_name;
     }
+    const isFresh = options.fresh || false;
 
     const currentPwd = process.cwd();
     const workspaceDirectory = `${currentPwd}/${workspace_name}`;
@@ -49,12 +52,12 @@ program
 
     const spinner2 = ora().start('Adding React Native');
 
-    executeCommand(workspaceDirectory, `npm i -D @nx/react-native@17.3.0 --ignore-scripts`, {
+    executeCommand(workspaceDirectory, `npm i -D @nx/react-native@19.4.4 --ignore-scripts`, {
       stdio: 'inherit',
     });
     executeCommand(
       workspaceDirectory,
-      `npx nx g @nx/react-native:app apps/mobile --skip-nx-cache`,
+      `npx nx g @nx/react-native:app apps/mobile --bundler vite --install false --skip-nx-cache`,
       {
         stdio: 'inherit',
       },
@@ -83,8 +86,14 @@ program
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`);
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`);
-    removeDir(`${workspaceDirectory}/apps/mobile/src`);
-    copyDir(`${workspaceDirectory}/apps`, `apps`);
+    
+    if (!isFresh) {
+      removeDir(`${workspaceDirectory}/apps/mobile/src`);
+      removeFile(`${workspaceDirectory}/apps/mobile/.vite.config.ts`);
+      removeFile(`${workspaceDirectory}/apps/mobile/.babelrc.js`);
+      copyDir(`${workspaceDirectory}/apps`, `apps`);
+    }
+
     copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `.ignorefile`);
     executeCommand(
       workspaceDirectory,

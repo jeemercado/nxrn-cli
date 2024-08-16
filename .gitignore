@@ -145,3 +145,6 @@ web-build/
 !staging.keystore
 !production.keystore
 example
+example-fresh
+*.diff
+diff.html
