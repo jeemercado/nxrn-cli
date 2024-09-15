@@ -17,7 +17,7 @@ import {
 program
   .name('React Native Starter with NX')
   .description('A starter script to create a new React Native project with NX')
-  .version('1.0.0');
+  .version('1.0.18');
 
 program
   .command('create [workspace_name]')
