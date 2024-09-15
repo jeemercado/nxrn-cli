@@ -1,9 +1,7 @@
-import { ReactNode } from 'react';
-
 import { useLocalStorageState } from '../../../stores';
 
 type Props = {
-  children: ReactNode;
+  children: JSX.Element;
 };
 
 export function StorageManager(props: Props) {

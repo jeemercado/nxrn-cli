@@ -1,4 +1,5 @@
 export * from './BottomSheet';
+export * from './Box';
 export * from './Button';
 export * from './Divider';
 export * from './InputLayout';
@@ -6,5 +7,5 @@ export * from './ListLoadingItem';
 export * from './Modal';
 export * from './ScreenLoader';
 export * from './Skeleton';
-export * from './Text';
 export * from './TextInput';
+export * from './Typography';

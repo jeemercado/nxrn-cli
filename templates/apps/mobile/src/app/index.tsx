@@ -8,6 +8,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze } from 'react-native-screens';
+import { useDeviceContext } from 'twrnc';
+
 import 'react-native-url-polyfill/auto';
 
 import { StorageManager } from '../components';
@@ -35,7 +37,11 @@ const persister = createAsyncStoragePersister({
 
 const persistOptions = { maxAge: CACHE_TIME, persister };
 
-function Application(): JSX.Element {
+function Application() {
+  useDeviceContext(tw, {
+    initialColorScheme: 'light',
+  });
+
   return (
     <GestureHandlerRootView style={tw`flex-1`}>
       <SafeAreaProvider>

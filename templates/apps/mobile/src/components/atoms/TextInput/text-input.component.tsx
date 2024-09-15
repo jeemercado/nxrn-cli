@@ -4,7 +4,6 @@ import {
   TextInputProps as RNTextInputProps,
   StyleProp,
   TextStyle,
-  View,
 } from 'react-native';
 
 import {
@@ -14,7 +13,8 @@ import {
   disabledInputStyle,
   focusedInputStyle,
 } from '../../../tailwind';
-import { DefaultInputComponentProps } from '../../../types';
+import { DefaultComponentProps } from '../../../types';
+import { Box } from '../Box';
 
 import { DefaultNameInputProps, DefaultTextAreaInputProps } from './constants';
 
@@ -29,7 +29,7 @@ export function getTextInputHeightAdjustment(numberOfNewLines: number) {
   return TEXT_INPUT_MIN_HEIGHT + (numberOfNewLines - 2) * TEXT_INPUT_LINE_HEIGHT;
 }
 
-export type TextInputProps = DefaultInputComponentProps<string> &
+export type TextInputProps = DefaultComponentProps &
   RNTextInputProps & {
     textInputRef?: React.RefObject<RNTextInput>;
     textStyle?: StyleProp<TextStyle>;
@@ -62,7 +62,7 @@ export function TextInput(props: TextInputProps) {
   }
 
   return (
-    <View
+    <Box
       style={[
         defaultInputContainerStyle,
         focusedInputStyle(isFocused),
@@ -85,7 +85,7 @@ export function TextInput(props: TextInputProps) {
         onFocus={handleOnFocus}
         {...extraProps}
       />
-    </View>
+    </Box>
   );
 }
 

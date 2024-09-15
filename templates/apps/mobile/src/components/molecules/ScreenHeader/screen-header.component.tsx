@@ -1,16 +1,16 @@
-import React, { ReactNode } from 'react';
-import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React from 'react';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { GearIcon } from '../../../icons';
 import { tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types/component.type';
-import { Text } from '../../atoms/Text';
+import { Box } from '../../atoms';
+import { Typography } from '../../atoms/Typography';
 import { BackButton } from '../BackButton';
 
 type Props = DefaultComponentProps & {
   hasBackButton?: boolean;
-  extraActionComponent?: ReactNode;
-  shouldShowBorder?: boolean;
+  extraActionComponent?: React.ReactNode;
   title: string;
   titleStyle?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
@@ -24,7 +24,6 @@ export function ScreenHeader(props: Props) {
     hasBackButton = true,
     onBackPress,
     onExtraActionPress,
-    shouldShowBorder = false,
     style,
     title,
     titleStyle,
@@ -37,35 +36,30 @@ export function ScreenHeader(props: Props) {
       style={tw`z-10 h-[48px] w-[48px]`}
       onPress={onExtraActionPress}
     >
-      <View style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
+      <Box style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
         {extraActionComponent ? (
           extraActionComponent
         ) : (
           <GearIcon height={25} style={tw`text-black-950`} width={25} />
         )}
-      </View>
+      </Box>
     </TouchableOpacity>
   );
 
   return (
-    <View style={[tw`h-[64px] border border-transparent bg-gray-50`, style]}>
-      <View
-        style={[
-          tw`flex-row items-center justify-between border border-transparent p-4 pt-2`,
-          shouldShowBorder && tw`elevation-2 -m-[5px]`,
-        ]}
-      >
+    <Box style={[tw`h-[64px] border border-transparent`, style]}>
+      <Box style={[tw`flex-row items-center justify-between border border-transparent p-4 pt-2`]}>
         {hasBackButton && <BackButton style={tw`z-10`} onPress={onBackPress} />}
-        <Text
+        <Typography
           style={[
             tw`text-primary-700 absolute inset-x-0 top-4 text-center text-xl font-medium`,
             titleStyle,
           ]}
         >
           {title}
-        </Text>
+        </Typography>
         {extraActionComponentDisplay}
-      </View>
-    </View>
+      </Box>
+    </Box>
   );
 }

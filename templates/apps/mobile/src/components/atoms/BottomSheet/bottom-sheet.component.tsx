@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-magic-numbers */
 import {
   BottomSheetBackdropProps,
@@ -6,7 +8,7 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
-import React, { FC, ReactNode, RefObject, useCallback, useMemo, useRef } from 'react';
+import React, { FC, RefObject, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, StyleProp, ViewStyle } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
@@ -16,7 +18,7 @@ import { DefaultComponentProps } from '../../../types';
 
 export type BottomSheetProps = DefaultComponentProps & {
   backgroundStyle?: StyleProp<Omit<ViewStyle, 'left' | 'right' | 'position' | 'top' | 'bottom'>>;
-  children?: ReactNode;
+  children?: React.ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
   enableDismissOnPressBackdrop?: boolean;
   enableDynamicSizing?: boolean;
@@ -100,6 +102,7 @@ export function BottomSheet(props: BottomSheetProps) {
   return (
     <BottomSheetModal
       ref={sheetRef}
+      android_keyboardInputMode="adjustResize"
       backdropComponent={renderBackdrop}
       backgroundStyle={[tw`bg-gray-50`, backgroundStyle]}
       enableDynamicSizing={enableDynamicSizing}
@@ -125,21 +128,20 @@ export function BottomSheet(props: BottomSheetProps) {
 }
 
 export function useBottomSheet() {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const expandSheet = useCallback(() => {
     Keyboard.dismiss();
     sheetRef.current?.present();
+    setIsVisible(true);
   }, []);
 
   const closeSheet = useCallback(() => {
     Keyboard.dismiss();
     sheetRef.current?.close();
+    setIsVisible(false);
   }, []);
 
-  return {
-    closeSheet,
-    expandSheet,
-    sheetRef,
-  };
+  return { closeSheet, expandSheet, isVisible, sheetRef };
 }

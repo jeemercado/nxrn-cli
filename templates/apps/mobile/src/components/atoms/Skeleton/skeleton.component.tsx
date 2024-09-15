@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,6 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { tw } from '../../../tailwind';
+import { Box } from '../Box';
 
 interface Props {
   children: React.ReactNode;
@@ -36,7 +36,7 @@ export function Skeleton(props: Props) {
 
   return (
     <Animated.View style={[tw`rounded-lg bg-gray-200`, animatedStyle]}>
-      <View style={tw`opacity-0`}>{children}</View>
+      <Box style={tw`opacity-0`}>{children}</Box>
     </Animated.View>
   );
 }

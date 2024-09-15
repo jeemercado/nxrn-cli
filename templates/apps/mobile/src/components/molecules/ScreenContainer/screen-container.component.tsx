@@ -6,7 +6,6 @@ import {
   Platform,
   StatusBar,
   StyleProp,
-  View,
   ViewStyle,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -15,8 +14,10 @@ import { Edge, SafeAreaProviderProps, SafeAreaView } from 'react-native-safe-are
 
 import CONFIG from '../../../config';
 import { tw } from '../../../tailwind';
+import { Box } from '../../atoms';
 
 type Props = SafeAreaProviderProps & {
+  scrollViewRef?: React.RefObject<KeyboardAwareScrollView>;
   containerStyle?: StyleProp<ViewStyle>;
   excludedEdges?: Edge[];
   extraBottomPadding?: number;
@@ -28,21 +29,20 @@ type Props = SafeAreaProviderProps & {
   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 };
 
-const defaultStyle = tw.style('grow', {
-  paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight - 1 : 0,
-});
+const defaultStyle = tw`grow`;
 
 const safeAreaViewEdges: Edge[] = Platform.select({
-  android: ['left', 'right', 'bottom'],
+  android: ['top', 'left', 'right', 'bottom'],
   default: [],
-  ios: ['left', 'right', 'bottom', 'top'],
+  ios: ['top', 'left', 'right', 'bottom'],
 });
 
 const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(KeyboardAwareScrollView);
 
-export function ScreenContainer(props: Props): JSX.Element {
+export function ScreenContainer(props: Props) {
   const {
     children,
+    scrollViewRef,
     containerStyle,
     excludedEdges = [],
     extraBottomPadding = 0,
@@ -81,10 +81,12 @@ export function ScreenContainer(props: Props): JSX.Element {
   ];
 
   return (
-    <SafeAreaView edges={edges} style={[tw`flex-1 bg-gray-50`, style]}>
+    <SafeAreaView edges={edges} style={[tw`flex-1 bg-gray-50 dark:bg-gray-900`, style]}>
       {hasScroll ? (
         <AnimatedKeyboardAwareScrollView
+        scrollViewRef={scrollViewRef}
           contentContainerStyle={defaultContainerStyle}
+          enableResetScrollToCoords={false}
           keyboardShouldPersistTaps="handled"
           refreshControl={refreshControl}
           scrollEventThrottle={16}
@@ -93,7 +95,7 @@ export function ScreenContainer(props: Props): JSX.Element {
           {children}
         </AnimatedKeyboardAwareScrollView>
       ) : (
-        <View style={defaultContainerStyle}>{children}</View>
+        <Box style={defaultContainerStyle}>{children}</Box>
       )}
     </SafeAreaView>
   );

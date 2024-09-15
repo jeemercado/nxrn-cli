@@ -69,7 +69,7 @@ program
     );
     executeCommand(
       workspaceDirectory,
-      `npm install tailwindcss twrnc react-native-keyboard-aware-scroll-view react-native-safe-area-context @react-navigation/core @react-navigation/native @react-navigation/native-stack @react-navigation/routers @react-navigation/stack react-native-gesture-handler react-native-screens react-native-reanimated dayjs zustand jotai @tanstack/query-core @tanstack/query-sync-storage-persister @tanstack/react-query @tanstack/react-query-persist-client axios jotai-optics lodash react-hook-form react-native-fast-image react-native-get-random-values react-native-simple-toast react-native-url-polyfill zod zod-validation-error @react-native-async-storage/async-storage @react-native-community/hooks @gorhom/bottom-sheet @hookform/resolvers @react-native-community/datetimepicker @react-navigation/material-top-tabs @tanstack/query-async-storage-persister babel-plugin-module-resolver react-native-dotenv react-native-mmkv react-native-modal-datetime-picker react-native-pager-view react-native-modal react-native-svg-transformer react-native-url-polyfill uuid`,
+      `npm install tailwindcss twrnc react-native-keyboard-aware-scroll-view react-native-safe-area-context @react-navigation/core @react-navigation/native @react-navigation/native-stack @react-navigation/routers @react-navigation/stack react-native-gesture-handler react-native-screens react-native-reanimated dayjs zustand jotai @tanstack/query-core @tanstack/query-sync-storage-persister @tanstack/react-query @tanstack/react-query-persist-client axios jotai-optics lodash react-hook-form react-native-fast-image react-native-get-random-values react-native-simple-toast react-native-url-polyfill zod zod-validation-error @react-native-async-storage/async-storage @react-native-community/hooks @gorhom/bottom-sheet @hookform/resolvers @react-native-community/datetimepicker @react-navigation/material-top-tabs @tanstack/query-async-storage-persister babel-plugin-module-resolver react-native-dotenv react-native-mmkv@^2.12.2 react-native-modal-datetime-picker react-native-pager-view react-native-modal react-native-svg-transformer react-native-url-polyfill uuid @shopify/react-native-skia lottie-react-native react-native-haptic-feedback`,
       { stdio: 'inherit' },
     );
     spinner2.succeed('React Native added');
@@ -109,6 +109,11 @@ program
     console.log(
       chalk.blue(
         'Next Steps? Rename your app using https://www.npmjs.com/package/react-native-rename',
+      ),
+    );
+    console.log(
+      chalk.blue(
+        'After renaming your app, Run npx react-native-asset',
       ),
     );
     console.log(

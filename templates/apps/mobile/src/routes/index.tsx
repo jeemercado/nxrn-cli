@@ -1,5 +1,5 @@
 import { DefaultTheme, NavigationContainer, Theme } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 
@@ -11,7 +11,7 @@ import PublicRoutes from './publicRoutes';
 import { Routes } from './routes.enum';
 import { screenOptions } from './screen-options';
 
-const RootStack = createStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 export const noAnimation = {
   animationEnabled: false,
@@ -25,7 +25,7 @@ const navigationTheme: Theme = {
   },
 };
 
-export default function ApplicationRoutes(): JSX.Element {
+export default function ApplicationRoutes() {
   // const { isLoading } = useAuth();
   // const isUserAuthenticated = useLocalStorageState((state) => !!state.accessToken);
   const isUserAuthenticated = false;

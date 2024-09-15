@@ -5,16 +5,17 @@ import {
   TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
-  View,
   ViewStyle,
 } from 'react-native';
 
 import { colors, disabledInputStyle, tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types/component.type';
-import { Text } from '../Text';
+import { Box } from '../Box';
+import { Typography } from '../Typography';
 
 type Props = DefaultComponentProps &
   TouchableOpacityProps & {
+    activityIndicatorColor?: string;
     buttonStyle?: StyleProp<ViewStyle>;
     children?: React.ReactNode;
     isLoading?: boolean;
@@ -24,9 +25,10 @@ type Props = DefaultComponentProps &
 
 const ACTIVE_OPACITY = 0.5;
 
-export function Button(props: Props): JSX.Element {
+export function Button(props: Props) {
   const {
     activeOpacity = ACTIVE_OPACITY,
+    activityIndicatorColor = colors.white,
     buttonStyle,
     children,
     isDisabled = false,
@@ -37,19 +39,33 @@ export function Button(props: Props): JSX.Element {
     ...rest
   } = props;
   const disabled = isDisabled || isLoading;
-  const display = children ?? <Text style={[tw`font-medium text-white`, textStyle]}>{title}</Text>;
+  const display = children ?? (
+    <Typography style={[tw`font-medium text-white`, textStyle]}>{title}</Typography>
+  );
 
   return (
     <TouchableOpacity activeOpacity={activeOpacity} disabled={disabled} style={[style]} {...rest}>
-      <View
+      <Box
         style={[
-          tw`bg-primary-700 items-center justify-center rounded-xl p-4`,
+          tw`bg-primary-700 items-center justify-center rounded-xl p-3`,
           buttonStyle,
           disabledInputStyle(disabled),
         ]}
       >
-        {isLoading ? <ActivityIndicator color={colors.white} /> : display}
-      </View>
+        {isLoading ? <ActivityIndicator color={activityIndicatorColor} /> : display}
+      </Box>
     </TouchableOpacity>
+  );
+}
+
+export function OutlinedButton(props: Props) {
+  const { ...rest } = props;
+
+  return (
+    <Button
+      {...rest}
+      buttonStyle={tw`border-primary-700 border-2 bg-white`}
+      textStyle={tw`text-primary-700`}
+    />
   );
 }

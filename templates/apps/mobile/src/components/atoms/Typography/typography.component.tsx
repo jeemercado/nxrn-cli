@@ -7,7 +7,7 @@ type Props = TextProps & {
   numberOfLines?: number;
 };
 
-export function Text(props: Props): JSX.Element {
+export function Typography(props: Props): JSX.Element {
   const { numberOfLines = 0, style, ...extraProps } = props;
 
   const shouldTruncateTextProps: TextProps =

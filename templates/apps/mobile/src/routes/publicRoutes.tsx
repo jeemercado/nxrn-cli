@@ -1,26 +1,29 @@
-import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 
-import { LoginScreen } from '../screens/LoginScreen/login.screen';
+import { LandingScreen } from '../screens/LandingScreen/landing.screen';
 
 import { screenOptions } from './screen-options';
 import { Screens } from './screens.enum';
 
-const PublicStack = createStackNavigator<PublicStackParams>();
+const PublicStack = createNativeStackNavigator<PublicStackParams>();
 
 export type PublicStackParams = {
-  [Screens.LOGIN]: undefined;
+  [Screens.LANDING]: undefined;
 };
 
-export type PublicScreenProps<T extends keyof PublicStackParams> = StackScreenProps<
+export type PublicScreenProps<T extends keyof PublicStackParams> = NativeStackScreenProps<
   PublicStackParams,
   T
 >;
 
-export default function PublicRoutes(): JSX.Element {
+export default function PublicRoutes() {
   return (
-    <PublicStack.Navigator initialRouteName={Screens.LOGIN} screenOptions={screenOptions}>
-      <PublicStack.Screen component={LoginScreen} name={Screens.LOGIN} />
-    </PublicStack.Navigator>
+    <BottomSheetModalProvider>
+      <PublicStack.Navigator initialRouteName={Screens.LANDING} screenOptions={screenOptions}>
+        <PublicStack.Screen component={LandingScreen} name={Screens.LANDING} />
+      </PublicStack.Navigator>
+    </BottomSheetModalProvider>
   );
 }

@@ -72,7 +72,7 @@ export const addScriptsInRootPackageJson = (dir) => {
     'ios-certificates': 'cd apps/mobile && npm run ios-certificates',
   };
   const dependencies = {
-    'react-native': '0.74.4',
+    'react-native': '0.74.5',
   };
 
   const packageJsonPath = path.join(dir, 'package.json');
