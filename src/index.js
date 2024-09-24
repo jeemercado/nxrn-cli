@@ -39,6 +39,7 @@ program
 
     const currentPwd = process.cwd();
     const workspaceDirectory = `${currentPwd}/${workspace_name}`;
+    const mobileDirectory = `${workspaceDirectory}/apps/mobile`;
 
     console.log(chalk.green(`Creating Nx workspace in ./${workspace_name}!`));
     const spinner1 = ora().start('Creating Nx workspace');
@@ -104,16 +105,18 @@ program
     );
     addScriptsInRootPackageJson(workspaceDirectory);
     spinner3.succeed('Files added');
+    executeCommand(
+      mobileDirectory,
+      `npx react-native-asset`,
+      {
+        stdio: 'inherit',
+      },
+    );
 
     console.log(chalk.green('Project created successfully!'));
     console.log(
       chalk.blue(
         'Next Steps? Rename your app using https://www.npmjs.com/package/react-native-rename',
-      ),
-    );
-    console.log(
-      chalk.blue(
-        'After renaming your app, Run npx react-native-asset',
       ),
     );
     console.log(

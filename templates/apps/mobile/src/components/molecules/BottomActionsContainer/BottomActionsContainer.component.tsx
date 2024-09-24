@@ -16,10 +16,7 @@ export function BottomActionsContainer(props: Props) {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      style={[
-        tw`border-geyser-200 absolute bottom-0 left-0 right-0 flex flex-col gap-y-2 border-b-0 border-t bg-gray-50 p-4`,
-        style,
-      ]}
+      style={[tw`absolute bottom-0 left-0 right-0`, style]}
       {...rest}
     >
       {children}
