@@ -15,7 +15,8 @@
     "tailwind.config.js",
     "test-setup.ts",
     "tsconfig.json",
-    "tsconfig.spec.json"
+    "tsconfig.spec.json",
+    "vite.config.ts"
   ],
   "overrides": [
     {

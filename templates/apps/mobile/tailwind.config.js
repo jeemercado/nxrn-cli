@@ -14,7 +14,7 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['Roboto'],
+      sans: ['Inter 18pt'],
     },
     extend: {
       flex: {

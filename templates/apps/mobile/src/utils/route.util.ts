@@ -1,6 +1,6 @@
 /* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CommonActions, NavigationState, ParamListBase, Route } from '@react-navigation/native';
+import { CommonActions, NavigationState, ParamListBase } from '@react-navigation/native';
 
 export function getPreviousRouteName(navigationState: NavigationState<ParamListBase>) {
   const routes = navigationState.routes;

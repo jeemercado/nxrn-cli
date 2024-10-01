@@ -42,13 +42,13 @@ const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(Keyboar
 export function ScreenContainer(props: Props) {
   const {
     children,
-    scrollViewRef,
     containerStyle,
     excludedEdges = [],
     extraBottomPadding = 0,
     hasScroll = true,
     onScroll,
     refreshControl,
+    scrollViewRef,
     shouldBeTranslucent = false,
     shouldShowStatusBar = true,
     statusBarColor = 'transparent',
@@ -84,7 +84,7 @@ export function ScreenContainer(props: Props) {
     <SafeAreaView edges={edges} style={[tw`flex-1 bg-gray-50 dark:bg-gray-900`, style]}>
       {hasScroll ? (
         <AnimatedKeyboardAwareScrollView
-        scrollViewRef={scrollViewRef}
+          ref={scrollViewRef}
           contentContainerStyle={defaultContainerStyle}
           enableResetScrollToCoords={false}
           keyboardShouldPersistTaps="handled"
