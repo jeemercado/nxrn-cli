@@ -72,8 +72,19 @@ export const addScriptsInRootPackageJson = (dir) => {
     'ios-certificates': 'cd apps/mobile && npm run ios-certificates',
   };
   const dependencies = {
-    'react-native': '0.74.5',
+    'react': '18.3.1',
+    'react-native': '0.75.4',
   };
+  const devDependencies = {
+    'react-test-renderer': '18.3.1',
+    '@react-native/babel-preset': '0.75.4',
+    '@react-native/eslint-config': '0.75.4',
+    '@react-native/metro-config': '0.75.4',
+    '@react-native/typescript-config': '0.75.4',
+    '@react-native-community/cli': '15.0.1',
+    '@react-native-community/cli-platform-android': '15.0.1',
+    '@react-native-community/cli-platform-ios': '15.0.1',
+  }
 
   const packageJsonPath = path.join(dir, 'package.json');
 
@@ -81,6 +92,7 @@ export const addScriptsInRootPackageJson = (dir) => {
 
   packageJson.scripts = { ...packageJson.scripts, ...scripts };
   packageJson.dependencies = { ...packageJson.dependencies, ...dependencies };
+  packageJson.devDependencies = { ...packageJson.devDependencies, ...devDependencies };
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };

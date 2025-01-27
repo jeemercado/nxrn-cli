@@ -1,12 +1,11 @@
 /* eslint-disable no-magic-numbers */
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import React, { useCallback, useState } from 'react';
-import { Keyboard, ModalBaseProps, StyleProp, ViewStyle } from 'react-native';
+import { Keyboard, ModalBaseProps, StyleProp, View, ViewStyle } from 'react-native';
 import RNModal from 'react-native-modal';
 
 import { tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types';
-import { Box } from '../Box';
 
 export type ModalProps = DefaultComponentProps &
   ModalBaseProps & {
@@ -32,7 +31,7 @@ export function Modal(props: ModalProps) {
       onBackdropPress={onBackdropPress}
     >
       <BottomSheetModalProvider>
-        <Box style={[tw`px-4`, containerStyle]}>{children}</Box>
+        <View style={[tw`px-4`, containerStyle]}>{children}</View>
       </BottomSheetModalProvider>
     </RNModal>
   );

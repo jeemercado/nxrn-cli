@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleProp, TextStyle } from 'react-native';
+import { StyleProp, TextStyle, View } from 'react-native';
 
 import { tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types';
-import { Box } from '../Box';
 import { Typography } from '../Typography';
 
 type Props = DefaultComponentProps & {
@@ -17,7 +16,7 @@ export function InputLayout(props: Props) {
   const { children, error, isRequired, label, style, textStyle } = props;
 
   return (
-    <Box style={[style]}>
+    <View style={[style]}>
       {label && (
         <Typography style={[tw`mb-2 text-gray-600`, textStyle]}>
           {label}
@@ -26,10 +25,10 @@ export function InputLayout(props: Props) {
       )}
       {children}
       {!!error && (
-        <Box style={tw`items-end`}>
+        <View style={tw`items-end`}>
           <Typography style={tw`text-right text-red-500`}>{error}</Typography>
-        </Box>
+        </View>
       )}
-    </Box>
+    </View>
   );
 }

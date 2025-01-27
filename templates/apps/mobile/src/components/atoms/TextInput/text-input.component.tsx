@@ -4,6 +4,7 @@ import {
   TextInputProps as RNTextInputProps,
   StyleProp,
   TextStyle,
+  View,
 } from 'react-native';
 
 import {
@@ -14,7 +15,6 @@ import {
   focusedInputStyle,
 } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types';
-import { Box } from '../Box';
 
 import { DefaultNameInputProps, DefaultTextAreaInputProps } from './constants';
 
@@ -62,7 +62,7 @@ export function TextInput(props: TextInputProps) {
   }
 
   return (
-    <Box
+    <View
       style={[
         defaultInputContainerStyle,
         focusedInputStyle(isFocused),
@@ -85,7 +85,7 @@ export function TextInput(props: TextInputProps) {
         onFocus={handleOnFocus}
         {...extraProps}
       />
-    </Box>
+    </View>
   );
 }
 

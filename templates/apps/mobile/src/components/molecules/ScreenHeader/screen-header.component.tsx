@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import { GearIcon } from '../../../icons';
 import { tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types/component.type';
-import { Box } from '../../atoms';
 import { Typography } from '../../atoms/Typography';
 import { BackButton } from '../BackButton';
 
@@ -36,19 +35,19 @@ export function ScreenHeader(props: Props) {
       style={tw`z-10 h-[48px] w-[48px]`}
       onPress={onExtraActionPress}
     >
-      <Box style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
+      <View style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
         {extraActionComponent ? (
           extraActionComponent
         ) : (
           <GearIcon height={25} style={tw`text-black-950`} width={25} />
         )}
-      </Box>
+      </View>
     </TouchableOpacity>
   );
 
   return (
-    <Box style={[tw`h-[64px] border border-transparent`, style]}>
-      <Box style={[tw`flex-row items-center justify-between border border-transparent p-4 pt-2`]}>
+    <View style={[tw`h-[64px] border border-transparent`, style]}>
+      <View style={[tw`flex-row items-center justify-between border border-transparent p-4 pt-2`]}>
         {hasBackButton && <BackButton style={tw`z-10`} onPress={onBackPress} />}
         <Typography
           style={[
@@ -59,7 +58,7 @@ export function ScreenHeader(props: Props) {
           {title}
         </Typography>
         {extraActionComponentDisplay}
-      </Box>
-    </Box>
+      </View>
+    </View>
   );
 }

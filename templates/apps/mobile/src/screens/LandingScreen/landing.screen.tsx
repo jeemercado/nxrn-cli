@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { View } from 'react-native';
 import {
   BottomSheet,
-  Box,
   Button,
   OutlinedButton,
   ScreenContainer,
@@ -10,27 +10,30 @@ import {
   Typography,
   useBottomSheet,
 } from '../../components';
-import { useToggleDarkMode } from '../../hooks';
 import { PublicScreenProps, Screens } from '../../routes';
 import { tw } from '../../tailwind';
+import { toast } from '../../utils';
 
 export function LandingScreen(props: PublicScreenProps<Screens.LANDING>) {
-  const toggleDarkMode = useToggleDarkMode();
   const { expandSheet, sheetRef } = useBottomSheet();
+
+  function toastHi() {
+    toast('Hi!')
+  }
 
   return (
     <ScreenContainer>
-      <ScreenHeader title="Landing" onExtraActionPress={toggleDarkMode} />
-      <Box style={tw`mx-4`}>
-        <Box row style={tw`gap-2`}>
+      <ScreenHeader title="Landing" onExtraActionPress={toastHi} />
+      <View style={tw`mx-4`}>
+        <View row style={tw`gap-2`}>
           <Button title="Show Bottom Sheet" onPress={expandSheet} />
           <OutlinedButton title="Login" />
-        </Box>
-      </Box>
+        </View>
+      </View>
       <BottomSheet sheetRef={sheetRef}>
-        <Box>
+        <View>
           <Typography>Bottom Sheet</Typography>
-        </Box>
+        </View>
       </BottomSheet>
     </ScreenContainer>
   );

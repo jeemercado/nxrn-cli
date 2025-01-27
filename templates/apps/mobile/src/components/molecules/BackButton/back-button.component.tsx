@@ -6,6 +6,7 @@ import {
   PressableProps,
   StyleProp,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native';
 
@@ -14,7 +15,6 @@ import { ArrowLeftIcon } from '../../../icons';
 import { Screens } from '../../../routes';
 import { tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types/component.type';
-import { Box } from '../../atoms';
 
 type Props = DefaultComponentProps &
   PressableProps & {
@@ -50,9 +50,9 @@ export function BackButton(props: Props) {
       style={[tw`h-[48px] w-[48px]`, style]}
       onPress={handleOnPress}
     >
-      <Box style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
+      <View style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
         <ArrowLeftIcon style={tw`text-gray-950`} />
-      </Box>
+      </View>
     </TouchableOpacity>
   );
 }

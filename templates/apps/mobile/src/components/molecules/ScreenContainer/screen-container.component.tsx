@@ -6,18 +6,18 @@ import {
   Platform,
   StatusBar,
   StyleProp,
+  View,
   ViewStyle,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Animated from 'react-native-reanimated';
+import { KeyboardAwareScrollView as RNKeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Edge, SafeAreaProviderProps, SafeAreaView } from 'react-native-safe-area-context';
 
 import CONFIG from '../../../config';
 import { tw } from '../../../tailwind';
-import { Box } from '../../atoms';
+import { KeyboardAwareScrollView } from '../../atoms';
 
 type Props = SafeAreaProviderProps & {
-  scrollViewRef?: React.RefObject<KeyboardAwareScrollView>;
+  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView>;
   containerStyle?: StyleProp<ViewStyle>;
   excludedEdges?: Edge[];
   extraBottomPadding?: number;
@@ -36,8 +36,6 @@ const safeAreaViewEdges: Edge[] = Platform.select({
   default: [],
   ios: ['top', 'left', 'right', 'bottom'],
 });
-
-const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(KeyboardAwareScrollView);
 
 export function ScreenContainer(props: Props) {
   const {
@@ -81,21 +79,18 @@ export function ScreenContainer(props: Props) {
   ];
 
   return (
-    <SafeAreaView edges={edges} style={[tw`flex-1 bg-gray-50 dark:bg-gray-900`, style]}>
+    <SafeAreaView edges={edges} style={[tw`flex-1 bg-gray-50`, style]}>
       {hasScroll ? (
-        <AnimatedKeyboardAwareScrollView
-          ref={scrollViewRef}
-          contentContainerStyle={defaultContainerStyle}
-          enableResetScrollToCoords={false}
-          keyboardShouldPersistTaps="handled"
+        <KeyboardAwareScrollView
+          containerStyle={defaultContainerStyle}
           refreshControl={refreshControl}
-          scrollEventThrottle={16}
+          scrollViewRef={scrollViewRef}
           onScroll={onScroll}
         >
           {children}
-        </AnimatedKeyboardAwareScrollView>
+        </KeyboardAwareScrollView>
       ) : (
-        <Box style={defaultContainerStyle}>{children}</Box>
+        <View style={defaultContainerStyle}>{children}</View>
       )}
     </SafeAreaView>
   );

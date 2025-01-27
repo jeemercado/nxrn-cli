@@ -5,12 +5,12 @@ import {
   TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
+  View,
   ViewStyle,
 } from 'react-native';
 
 import { colors, disabledInputStyle, tw } from '../../../tailwind';
 import { DefaultComponentProps } from '../../../types/component.type';
-import { Box } from '../Box';
 import { Typography } from '../Typography';
 
 type Props = DefaultComponentProps &
@@ -45,7 +45,7 @@ export function Button(props: Props) {
 
   return (
     <TouchableOpacity activeOpacity={activeOpacity} disabled={disabled} style={[style]} {...rest}>
-      <Box
+      <View
         style={[
           tw`bg-primary-700 items-center justify-center rounded-xl p-3`,
           buttonStyle,
@@ -53,7 +53,7 @@ export function Button(props: Props) {
         ]}
       >
         {isLoading ? <ActivityIndicator color={activityIndicatorColor} /> : display}
-      </Box>
+      </View>
     </TouchableOpacity>
   );
 }

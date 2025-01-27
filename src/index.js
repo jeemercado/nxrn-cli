@@ -17,7 +17,7 @@ import {
 program
   .name('React Native Starter with NX')
   .description('A starter script to create a new React Native project with NX')
-  .version('1.0.18');
+  .version('1.1.0');
 
 program
   .command('create [workspace_name]')
@@ -44,7 +44,7 @@ program
     console.log(chalk.green(`Creating Nx workspace in ./${workspace_name}!`));
     const spinner1 = ora().start('Creating Nx workspace');
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@19.4.4 --preset apps --workspaceType integrated --name ${workspace_name} --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@19.7.0 --preset apps --workspaceType integrated --name ${workspace_name} --nxCloud skip`,
       {
         stdio: 'inherit',
       },
@@ -53,7 +53,7 @@ program
 
     const spinner2 = ora().start('Adding React Native');
 
-    executeCommand(workspaceDirectory, `npm i -D @nx/react-native@19.4.4 --ignore-scripts`, {
+    executeCommand(workspaceDirectory, `npm i -D @nx/react-native@19.7.0 --ignore-scripts`, {
       stdio: 'inherit',
     });
     executeCommand(
@@ -70,7 +70,7 @@ program
     );
     executeCommand(
       workspaceDirectory,
-      `npm install tailwindcss twrnc react-native-keyboard-aware-scroll-view react-native-safe-area-context @react-navigation/core @react-navigation/native @react-navigation/native-stack @react-navigation/routers @react-navigation/stack react-native-gesture-handler react-native-screens react-native-reanimated dayjs zustand jotai @tanstack/query-core @tanstack/query-sync-storage-persister @tanstack/react-query @tanstack/react-query-persist-client axios jotai-optics lodash react-hook-form react-native-fast-image react-native-get-random-values react-native-simple-toast react-native-url-polyfill zod zod-validation-error @react-native-async-storage/async-storage @react-native-community/hooks @gorhom/bottom-sheet @hookform/resolvers @react-native-community/datetimepicker @react-navigation/material-top-tabs @tanstack/query-async-storage-persister babel-plugin-module-resolver react-native-dotenv react-native-mmkv@^2.12.2 react-native-modal-datetime-picker react-native-pager-view react-native-modal react-native-svg-transformer react-native-url-polyfill uuid @shopify/react-native-skia@1.3.13 lottie-react-native@^6.7.2 react-native-haptic-feedback`,
+      `npm install tailwindcss@3.4.16 twrnc react-native-keyboard-aware-scroll-view react-native-safe-area-context @react-navigation/core @react-navigation/native @react-navigation/native-stack @react-navigation/routers @react-navigation/stack react-native-gesture-handler react-native-screens react-native-reanimated dayjs zustand jotai @tanstack/query-core @tanstack/query-sync-storage-persister @tanstack/react-query @tanstack/react-query-persist-client axios jotai-optics lodash react-hook-form react-native-fast-image react-native-get-random-values react-native-simple-toast react-native-url-polyfill zod zod-validation-error @react-native-async-storage/async-storage @react-native-community/hooks @gorhom/bottom-sheet @hookform/resolvers @react-native-community/datetimepicker @react-navigation/material-top-tabs @tanstack/query-async-storage-persister babel-plugin-module-resolver react-native-dotenv react-native-mmkv@^2.12.2 react-native-modal-datetime-picker react-native-pager-view react-native-modal react-native-svg-transformer react-native-url-polyfill uuid @shopify/react-native-skia lottie-react-native@^6.7.2 react-native-haptic-feedback`,
       { stdio: 'inherit' },
     );
     spinner2.succeed('React Native added');
@@ -104,6 +104,11 @@ program
       },
     );
     addScriptsInRootPackageJson(workspaceDirectory);
+    executeCommand(
+      workspaceDirectory,
+      `npm install`,
+      { stdio: 'inherit' },
+    );
     spinner3.succeed('Files added');
     executeCommand(
       mobileDirectory,
