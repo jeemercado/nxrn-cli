@@ -2,8 +2,8 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { Edge, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {
   children?: React.ReactNode;

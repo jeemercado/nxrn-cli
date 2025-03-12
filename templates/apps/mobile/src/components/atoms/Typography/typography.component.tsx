@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Text as RNText, TextProps } from 'react-native';
 
-import { tw } from '../../../tailwind';
+import { tw } from '@/tailwind';
 
 type Props = TextProps & {
   numberOfLines?: number;

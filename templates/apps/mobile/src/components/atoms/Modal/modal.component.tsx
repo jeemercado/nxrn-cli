@@ -4,8 +4,8 @@ import React, { useCallback, useState } from 'react';
 import { Keyboard, ModalBaseProps, StyleProp, View, ViewStyle } from 'react-native';
 import RNModal from 'react-native-modal';
 
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 export type ModalProps = DefaultComponentProps &
   ModalBaseProps & {

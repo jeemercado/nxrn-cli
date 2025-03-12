@@ -17,7 +17,8 @@
       "dependsOn": ["check-env", "ensure-symlink", "pod-install"],
       "options": {
         "port": 8081,
-        "resetCache": true
+        "resetCache": true,
+        "client-logs": true
       }
     },
     "serve": {

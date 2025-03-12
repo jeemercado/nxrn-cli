@@ -1,4 +1,6 @@
-import { useLocalStorageState } from '../../../stores';
+import { JSX } from 'react';
+
+import { useLocalStorageState } from '@/stores';
 
 type Props = {
   children: JSX.Element;

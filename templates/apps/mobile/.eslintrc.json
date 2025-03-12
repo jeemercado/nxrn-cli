@@ -21,7 +21,10 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
+      "rules": {
+        "import/no-unresolved": "off",
+        "import/extensions": "off"
+      }
     },
     {
       "files": ["*.ts", "*.tsx"],

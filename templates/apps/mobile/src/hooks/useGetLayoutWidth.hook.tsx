@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
-import { useDebounce } from './useDebounce.hook';
+import { useDebounce } from '@/hooks/useDebounce.hook';
 
 export function useGetLayoutWidth(
   initialWidth = 0,

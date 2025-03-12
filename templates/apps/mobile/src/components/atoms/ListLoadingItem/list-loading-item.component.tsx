@@ -1,9 +1,9 @@
 import React from 'react';
-
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
-import { Skeleton } from '../Skeleton';
 import { View } from 'react-native';
+
+import { Skeleton } from '@/components/atoms/Skeleton';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {
   isLoading: boolean;

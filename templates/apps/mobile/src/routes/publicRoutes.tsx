@@ -2,10 +2,9 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 
-import { LandingScreen } from '../screens/LandingScreen/landing.screen';
-
-import { screenOptions } from './screen-options';
-import { Screens } from './screens.enum';
+import { Screens } from '@/routes';
+import { screenOptions } from '@/routes/screen-options';
+import { LandingScreen } from '@/screens/LandingScreen/landing.screen';
 
 const PublicStack = createNativeStackNavigator<PublicStackParams>();
 

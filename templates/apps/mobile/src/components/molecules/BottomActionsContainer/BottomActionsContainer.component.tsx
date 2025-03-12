@@ -2,8 +2,8 @@ import React from 'react';
 import { ViewProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps &
   ViewProps & {

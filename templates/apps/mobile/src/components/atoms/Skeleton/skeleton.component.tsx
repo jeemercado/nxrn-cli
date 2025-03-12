@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -6,16 +7,16 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { View } from 'react-native';
-import { tw } from '../../../tailwind';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
-type Props = {
+type Props = DefaultComponentProps & {
   children?: React.ReactNode;
   isLoading: boolean;
-}
+};
 
 export function Skeleton(props: Props) {
-  const { children, isLoading } = props;
+  const { children, isLoading, style } = props;
   const opacity = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(
@@ -35,7 +36,7 @@ export function Skeleton(props: Props) {
   }
 
   return (
-    <Animated.View style={[tw`rounded-lg bg-gray-200`, animatedStyle]}>
+    <Animated.View style={[tw`rounded-lg bg-gray-200`, animatedStyle, style]}>
       <View style={tw`opacity-0`}>{children}</View>
     </Animated.View>
   );

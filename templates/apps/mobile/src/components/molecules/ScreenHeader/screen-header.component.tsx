@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 
-import { GearIcon } from '../../../icons';
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types/component.type';
-import { Typography } from '../../atoms/Typography';
-import { BackButton } from '../BackButton';
+import { Typography } from '@/components';
+import { BackButton } from '@/components/molecules/BackButton';
+import { GearIcon } from '@/icons';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {
   hasBackButton?: boolean;

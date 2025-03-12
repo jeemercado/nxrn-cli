@@ -4,6 +4,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
+  RefreshControlProps,
   StatusBar,
   StatusBarStyle,
   StyleProp,
@@ -13,9 +14,9 @@ import {
 import { KeyboardAwareScrollView as RNKeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Edge, SafeAreaProviderProps, SafeAreaView } from 'react-native-safe-area-context';
 
-import CONFIG from '../../../config';
-import { tw } from '../../../tailwind';
-import { KeyboardAwareScrollView } from '../../atoms';
+import { KeyboardAwareScrollView } from '@/components';
+import CONFIG from '@/config';
+import { tw } from '@/tailwind';
 
 type Props = SafeAreaProviderProps & {
   barStyle?: StatusBarStyle;
@@ -81,7 +82,7 @@ export function ScreenContainer(props: Props) {
       {hasScroll ? (
         <KeyboardAwareScrollView
           containerStyle={defaultContainerStyle}
-          refreshControl={refreshControl}
+          refreshControl={refreshControl as ReactElement<RefreshControlProps>}
           scrollViewRef={scrollViewRef}
           onScroll={onScroll}
         >

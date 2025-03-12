@@ -1,8 +1,8 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import { colors, tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types/component.type';
+import { colors, tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps;
 

@@ -9,9 +9,9 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { colors, disabledInputStyle, tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types/component.type';
-import { Typography } from '../Typography';
+import { Typography } from '@/components/atoms/Typography';
+import { colors, disabledInputStyle, tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps &
   TouchableOpacityProps & {

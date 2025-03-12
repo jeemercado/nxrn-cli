@@ -1,8 +1,8 @@
 import React from 'react';
-
 import { View } from 'react-native';
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
+
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {};
 

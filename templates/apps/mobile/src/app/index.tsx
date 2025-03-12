@@ -10,11 +10,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze } from 'react-native-screens';
 import { useDeviceContext } from 'twrnc';
 
+import { StorageManager } from '@/components';
+import CONFIG from '@/config';
+import ApplicationRoutes from '@/routes';
+import { tw } from '@/tailwind';
 import 'react-native-url-polyfill/auto';
-
-import { StorageManager } from '../components';
-import ApplicationRoutes from '../routes';
-import { tw } from '../tailwind';
 
 LogBox.ignoreLogs(['VirtualizedLists', 'onAnimatedValueUpdate']);
 
@@ -32,7 +32,7 @@ const queryClient = new QueryClient({
 });
 
 const storage = new MMKV({
-  encryptionKey: 'default-key',
+  encryptionKey: CONFIG.STORAGE_KEY,
   id: 'react-query-persist',
 });
 

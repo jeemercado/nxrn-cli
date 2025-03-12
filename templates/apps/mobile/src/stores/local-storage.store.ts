@@ -1,7 +1,7 @@
 import { StateCreator, create } from 'zustand';
 import { PersistOptions, createJSONStorage, persist } from 'zustand/middleware';
 
-import { MmkvStorage } from './mmkvStorage';
+import { MmkvStorage } from '@/stores/mmkvStorage';
 
 const initialState = {
   _hasHydrated: false,

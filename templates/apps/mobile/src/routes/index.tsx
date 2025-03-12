@@ -3,13 +3,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 
-import CONFIG from '../config';
-import { colors } from '../tailwind';
-
-import PrivateRoutes from './privateRoutes';
-import PublicRoutes from './publicRoutes';
-import { Routes } from './routes.enum';
-import { screenOptions } from './screen-options';
+import CONFIG from '@/config';
+import { Routes } from '@/routes';
+import PrivateRoutes from '@/routes/privateRoutes';
+import PublicRoutes from '@/routes/publicRoutes';
+import { screenOptions } from '@/routes/screen-options';
+import { colors } from '@/tailwind';
 
 const RootStack = createNativeStackNavigator();
 

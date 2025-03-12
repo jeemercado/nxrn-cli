@@ -27,6 +27,6 @@ rm -rf "$app_rn_ios_build_path"
 echo "Deleting $app_rn_android_gradle_path..."
 rm -rf "$app_rn_android_gradle_path"
 
-npm install
+yarn install
 
 echo "Done!"

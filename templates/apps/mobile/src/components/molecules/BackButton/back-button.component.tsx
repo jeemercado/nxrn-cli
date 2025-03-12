@@ -10,11 +10,11 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { useNavigation } from '../../../hooks';
-import { ArrowLeftIcon } from '../../../icons';
-import { Screens } from '../../../routes';
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types/component.type';
+import { useNavigation } from '@/hooks';
+import { ArrowLeftIcon } from '@/icons';
+import { Screens } from '@/routes';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps &
   PressableProps & {

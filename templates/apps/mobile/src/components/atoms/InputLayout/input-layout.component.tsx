@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleProp, TextStyle, View } from 'react-native';
 
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
-import { Typography } from '../Typography';
+import { Typography } from '@/components/atoms/Typography';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {
   children?: React.ReactNode;

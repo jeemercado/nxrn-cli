@@ -8,15 +8,17 @@ import {
 } from 'react-native';
 
 import {
+  DefaultNameInputProps,
+  DefaultTextAreaInputProps,
+} from '@/components/atoms/TextInput/constants';
+import {
   colors,
   defaultInputContainerStyle,
   defaultInputTextStyle,
   disabledInputStyle,
   focusedInputStyle,
-} from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
-
-import { DefaultNameInputProps, DefaultTextAreaInputProps } from './constants';
+} from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 export const TEXT_INPUT_MIN_HEIGHT = 100;
 export const TEXT_INPUT_LINE_HEIGHT = 21;

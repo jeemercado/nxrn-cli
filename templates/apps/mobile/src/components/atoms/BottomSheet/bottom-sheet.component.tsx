@@ -13,8 +13,8 @@ import { Keyboard, StyleProp, ViewStyle } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
-import { tw } from '../../../tailwind';
-import { DefaultComponentProps } from '../../../types';
+import { tw } from '@/tailwind';
+import { DefaultComponentProps } from '@/types';
 
 export type BottomSheetProps = DefaultComponentProps & {
   backgroundStyle?: StyleProp<Omit<ViewStyle, 'left' | 'right' | 'position' | 'top' | 'bottom'>>;
@@ -127,7 +127,12 @@ export function BottomSheet(props: BottomSheetProps) {
   );
 }
 
-export function useBottomSheet() {
+export function useBottomSheet(): {
+  closeSheet: () => void;
+  expandSheet: () => void;
+  isVisible: boolean;
+  sheetRef: RefObject<BottomSheetModal>;
+} {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheetModal>(null);
 
@@ -143,5 +148,5 @@ export function useBottomSheet() {
     setIsVisible(false);
   }, []);
 
-  return { closeSheet, expandSheet, isVisible, sheetRef };
+  return { closeSheet, expandSheet, isVisible, sheetRef: sheetRef as RefObject<BottomSheetModal> };
 }

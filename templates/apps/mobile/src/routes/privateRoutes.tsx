@@ -3,10 +3,9 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 
-import { HomeScreen } from '../screens/HomeScreen/home.screen';
-
-import { screenOptions } from './screen-options';
-import { Screens } from './screens.enum';
+import { Screens } from '@/routes';
+import { screenOptions } from '@/routes/screen-options';
+import { HomeScreen } from '@/screens/HomeScreen/home.screen';
 
 const PrivateStack = createNativeStackNavigator<PrivateStackParams>();
 
