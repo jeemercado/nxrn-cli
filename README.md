@@ -1,6 +1,7 @@
 # React Native Mobile App Starter with NX
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://img.shields.io/npm/v/nx-react-native-cli.svg?style=flat)](https://www.npmjs.com/package/nx-react-native-cli)
 
 ## 📦 Introduction
 
