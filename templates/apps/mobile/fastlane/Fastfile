@@ -1,7 +1,35 @@
 
 require 'fileutils'
+require 'base64'
+require 'json'
 
 def app_name = "AppsMobile"
+def service_account_path = '/tmp/fbd-sa.json'
+
+def decode_base64_to_json(encoded_string, output_path)
+  begin
+    # Decode the Base64 string
+    decoded_data = Base64.decode64(encoded_string)
+
+    # Parse JSON from the decoded data
+    json_data = JSON.parse(decoded_data)
+
+    # Write to the specified file
+    File.open(output_path, 'w') do |file|
+      file.write(JSON.pretty_generate(json_data))
+    end
+
+    puts "JSON file successfully written to: #{output_path}"
+  rescue JSON::ParserError
+    puts "Error: Decoded data is not valid JSON."
+  rescue StandardError => e
+    puts "Error: #{e.message}"
+  end
+end
+
+def get_service_account_credentials()
+    decode_base64_to_json(ENV['FIREBASE_SERVICE_ACCOUNT'], service_account_path)
+end
 
 def delete_gradle_temp()
     UI.message("Deleting Gradle Temp...")
@@ -136,6 +164,10 @@ def setup_android()
         gradle_file_path: "./android/app/build.gradle",
         version_code: build_number
     )
+
+    # Retrieving Service Account Credentials
+    UI.message("Retrieving Service Account Credentials...")
+    get_service_account_credentials()
 end
 
 def ios_build_ipa(configuration, scheme)
@@ -216,7 +248,7 @@ end
 def publish_bundle(flavor)
     UI.message("Uploading aab build to Firebase...")
     release = firebase_app_distribution(
-        service_credentials_file: to_boolean(ENV['IS_CI']) ? '/tmp/google-service-account-key.json' : nil,
+        service_credentials_file: service_account_path,
         app: ENV['FASTLANE_FIREBASE_APP_ID'],
         android_artifact_type: "AAB",
         android_artifact_path: "./android/app/build/outputs/bundle/#{flavor}Release/app-#{flavor}-release.aab",
@@ -228,7 +260,7 @@ end
 def publish_apk(flavor)
     UI.message("Uploading apk build to Firebase...")
     release = firebase_app_distribution(
-        service_credentials_file: to_boolean(ENV['IS_CI']) ? '/tmp/google-service-account-key.json' : nil,
+        service_credentials_file: service_account_path,
         app: ENV['FASTLANE_FIREBASE_APP_ID'],
         android_artifact_type: "APK",
         android_artifact_path: "./android/app/build/outputs/apk/#{flavor}/release/app-#{flavor}-release.apk",
@@ -238,6 +270,11 @@ def publish_apk(flavor)
 end
 
 platform :android do 
+    desc "Get Service Account Credentials"
+    lane :get_service_account_credentials do
+        get_service_account_credentials()
+    end
+
     desc "Build Android (Dev Server)"
     lane :dev do 
         begin
@@ -253,10 +290,14 @@ platform :android do
     desc "Build Android (Production Server)"
     lane :prod do 
         begin
-            flavor = 'production'
+            flavor = 'prod'
             setup_android()
-            android_build_bundle(flavor)
-            publish_bundle(flavor)
+            # TODO: COMMENT IF FIREBASE PROD IS LINKED TO GOOGLE PLAY
+            android_build_apk(flavor)
+            publish_apk(flavor)
+            # TODO: UNCOMMENT IF FIREBASE PROD IS LINKED TO GOOGLE PLAY
+            # android_build_bundle(flavor)
+            # publish_bundle(flavor)
         rescue => exception
             UI.error(exception)
         end

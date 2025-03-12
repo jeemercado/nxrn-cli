@@ -46,6 +46,28 @@ A comprehensive React Native mobile application starter kit built with Nx worksp
 - **Husky**: Git hooks for code quality
 - **Fastlane**: Automated deployment for iOS and Android
 
+## 🚀 Getting Started
+
+### Running the Application
+
+To get started with development, follow these simple commands:
+
+```bash
+# Start the Metro bundler
+npm run serve:mobile
+
+# Build and run on Android
+npm run android
+
+# Open the iOS project in Xcode for building and running
+npm run xcode
+```
+
+These commands will help you:
+- `serve:mobile`: Start the Metro bundler which compiles your JavaScript code
+- `android`: Build and install the app on an Android device or emulator
+- `xcode`: Open the iOS project in Xcode where you can build and run on iOS simulators or physical devices
+
 ## 📄 License
 
 MIT
