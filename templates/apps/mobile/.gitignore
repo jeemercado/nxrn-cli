@@ -82,7 +82,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
-
+.kotlin/
 
 # node.js
 #
@@ -145,7 +145,3 @@ web-build/
 !dev.keystore
 !staging.keystore
 !production.keystore
-example
-example-fresh
-*.diff
-diff.html

@@ -1,11 +1,11 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { AsyncStorage, PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import React from 'react';
 import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
+import { MMKV } from 'react-native-mmkv';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze } from 'react-native-screens';
 import { useDeviceContext } from 'twrnc';
@@ -31,8 +31,23 @@ const queryClient = new QueryClient({
   },
 });
 
+const storage = new MMKV({
+  encryptionKey: 'default-key',
+  id: 'react-query-persist',
+});
+
+export const MmkvStorage: AsyncStorage = {
+  getItem: (name) => {
+    const value = storage.getString(name);
+
+    return value ?? null;
+  },
+  removeItem: (name) => storage.delete(name),
+  setItem: (name, value) => storage.set(name, value),
+};
+
 const persister = createAsyncStoragePersister({
-  storage: AsyncStorage,
+  storage: MmkvStorage as AsyncStorage,
 });
 
 const persistOptions = { maxAge: CACHE_TIME, persister };

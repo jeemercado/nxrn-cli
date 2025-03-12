@@ -1,6 +1,8 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import dependenciesJson from './dependencies.json';
+import devDependenciesJson from './devDependencies.json';
 
 export function getDirName() {
   return __dirname;
@@ -52,47 +54,33 @@ export const removeFile = (filePath) => {
 
 export const addScriptsInRootPackageJson = (dir) => {
   const scripts = {
-    android: 'npx nx run-android mobile --skip-nx-cache',
-    'android:connect': 'cd apps/mobile && npm run android:connect',
-    'check-env:mobile': './check-env.sh apps/mobile/.env apps/mobile/.env.template',
-    clean: './clean-generated-outputs.sh',
-    'create-env': 'printenv > ',
-    'lint:all': 'npx nx run-many -t lint -p mobile --parallel=1 --skip-nx-cache',
-    'lint:mobile': 'npx nx run mobile:lint --skip-nx-cache',
-    'mobile-android': 'cd apps/mobile && npm run run-android',
-    'mobile-ios': 'cd apps/mobile && npm run run-ios',
-    prepare: 'husky install',
-    'serve:mobile': 'cd apps/mobile && npm start',
-    'serve:all': 'npx nx run-many -t serve -p mobile --parallel=1 --skip-nx-cache',
-    xcode: 'cd apps/mobile && npm run xcode',
-    'touch-xcode': 'cd apps/mobile && npm run touch-xcode',
-    'setup-fastlane': 'cd apps/mobile && npm run setup-fastlane',
-    'deploy-android:dev': 'cd apps/mobile && npm run deploy-android:dev',
-    'deploy-ios:dev': 'cd apps/mobile && npm run deploy-ios:dev',
-    'ios-certificates': 'cd apps/mobile && npm run ios-certificates',
+    "doctor": "npx nx react-native doctor",
+    "android": "npx nx run-android mobile --skip-nx-cache",
+    "android:connect": "cd apps/mobile && npm run android:connect",
+    "check-env:mobile": "./check-env.sh apps/mobile/.env apps/mobile/.env.template",
+    "clean": "./clean-generated-outputs.sh",
+    "create-env": "printenv > ",
+    "lint:all": "npx nx run-many -t lint -p mobile --parallel=1 --skip-nx-cache",
+    "lint:mobile": "npx nx run mobile:lint --skip-nx-cache",
+    "mobile-android": "cd apps/mobile && npm run run-android",
+    "mobile-ios": "cd apps/mobile && npm run run-ios",
+    "prepare": "husky install",
+    "serve:mobile": "cd apps/mobile && npm start",
+    "serve:all": "npx nx run-many -t serve -p mobile --parallel=1 --skip-nx-cache",
+    "xcode": "cd apps/mobile && npm run xcode",
+    "touch-xcode": "cd apps/mobile && npm run touch-xcode",
+    "setup-fastlane": "cd apps/mobile && npm run setup-fastlane",
+    "deploy-android:dev": "cd apps/mobile && npm run deploy-android:dev",
+    "deploy-ios:dev": "cd apps/mobile && npm run deploy-ios:dev",
+    "ios-certificates": "cd apps/mobile && npm run ios-certificates",
+    "pod-install": "cd apps/mobile && npm run pod-install",
+    "react-native-asset": "cd apps/mobile && npx react-native-asset"
   };
-  const dependencies = {
-    'react': '18.3.1',
-    'react-native': '0.75.4',
-  };
-  const devDependencies = {
-    'react-test-renderer': '18.3.1',
-    '@react-native/babel-preset': '0.75.4',
-    '@react-native/eslint-config': '0.75.4',
-    '@react-native/metro-config': '0.75.4',
-    '@react-native/typescript-config': '0.75.4',
-    '@react-native-community/cli': '15.0.1',
-    '@react-native-community/cli-platform-android': '15.0.1',
-    '@react-native-community/cli-platform-ios': '15.0.1',
-  }
-
   const packageJsonPath = path.join(dir, 'package.json');
-
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-
+  packageJson.dependencies = { ...packageJson.dependencies, ...dependenciesJson.dependencies };
+  packageJson.devDependencies = { ...packageJson.devDependencies, ...devDependenciesJson.devDependencies };
   packageJson.scripts = { ...packageJson.scripts, ...scripts };
-  packageJson.dependencies = { ...packageJson.dependencies, ...dependencies };
-  packageJson.devDependencies = { ...packageJson.devDependencies, ...devDependencies };
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };

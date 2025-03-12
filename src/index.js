@@ -14,22 +14,59 @@ import {
   removeFile
 } from './utils/index.js';
 
+const styles = {
+  title: chalk.bold.cyan,
+  subtitle: chalk.cyan,
+  success: chalk.bold.green,
+  info: chalk.bold.blue,
+  warning: chalk.hex('#FFA500').bold,
+  error: chalk.bold.red,
+  highlight: chalk.bold.magenta,
+  command: chalk.yellow.italic,
+  path: chalk.green.underline,
+  step: (num) => chalk.bgCyan.black(` STEP ${num} `),
+  emoji: {
+    rocket: '🚀',
+    check: '✅',
+    warning: '⚠️',
+    star: '⭐',
+    sparkles: '✨',
+    tools: '🛠️',
+    mobile: '📱',
+    folder: '📁',
+    code: '💻'
+  }
+};
+
+const displayBanner = () => {
+  console.log('\n');
+  console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
+  console.log(styles.title('║                                                        ║'));
+  console.log(styles.title('║  ') + styles.highlight('NX REACT NATIVE CLI') + styles.title('                                   ║'));
+  console.log(styles.title('║  ') + styles.subtitle('A powerful starter for React Native with NX') + styles.title('           ║'));
+  console.log(styles.title('║                                                        ║'));
+  console.log(styles.title('╚════════════════════════════════════════════════════════╝'));
+  console.log('\n');
+};
+
 program
   .name('React Native Starter with NX')
   .description('A starter script to create a new React Native project with NX')
-  .version('1.1.0');
+  .version('2.0.0');
 
 program
   .command('create [workspace_name]')
   .description('create nx workspace with react-native')
   .option('--fresh', 'Create a fresh project without copying template files')
   .action(async (workspace_name, options) => {
+    displayBanner();
+    
     if (!workspace_name) {
       const result = await inquirer.prompt([
         {
           type: 'input',
           name: 'workspace_name',
-          message: 'Enter the workspace name',
+          message: styles.info('Enter the workspace name:'),
         },
       ]);
 
@@ -41,19 +78,27 @@ program
     const workspaceDirectory = `${currentPwd}/${workspace_name}`;
     const mobileDirectory = `${workspaceDirectory}/apps/mobile`;
 
-    console.log(chalk.green(`Creating Nx workspace in ./${workspace_name}!`));
-    const spinner1 = ora().start('Creating Nx workspace');
+    console.log(`\n${styles.step(1)} ${styles.emoji.folder} ${styles.success(`Creating Nx workspace in ${styles.path(`./${workspace_name}`)}`)}`);
+    const spinner1 = ora({
+      text: 'Setting up Nx workspace...',
+      color: 'cyan'
+    }).start();
+    
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@19.7.0 --preset apps --workspaceType integrated --name ${workspace_name} --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@19.7.0 --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
       {
         stdio: 'inherit',
       },
     );
-    spinner1.succeed('Nx workspace created');
+    spinner1.succeed(styles.success('Nx workspace created successfully'));
 
-    const spinner2 = ora().start('Adding React Native');
+    console.log(`\n${styles.step(2)} ${styles.emoji.mobile} ${styles.success('Adding React Native to your workspace')}`);
+    const spinner2 = ora({
+      text: 'Installing React Native dependencies...',
+      color: 'cyan'
+    }).start();
 
-    executeCommand(workspaceDirectory, `npm i -D @nx/react-native@19.7.0 --ignore-scripts`, {
+    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@19.7.0 --ignore-scripts`, {
       stdio: 'inherit',
     });
     executeCommand(
@@ -63,19 +108,22 @@ program
         stdio: 'inherit',
       },
     );
-    executeCommand(
-      workspaceDirectory,
-      `npm install --save-dev react-native-dotenv husky prettier@3.3.2 @typescript-eslint/parser@6.21.0 eslint-config-airbnb-typescript@17.1.0 eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-perf eslint-plugin-sonarjs@0.25.1 @tanstack/eslint-plugin-query eslint-plugin-tailwindcss eslint-config-prettier @typescript-eslint/eslint-plugin@6.13.2 eslint-plugin-import eslint-plugin-sort-destructure-keys eslint-plugin-sort-keys-fix eslint-plugin-prettier prettier-plugin-tailwindcss eslint-import-resolver-typescript @swc-node/register@~1.8.0`,
-      { stdio: 'inherit' },
-    );
-    executeCommand(
-      workspaceDirectory,
-      `npm install tailwindcss@3.4.16 twrnc react-native-keyboard-aware-scroll-view react-native-safe-area-context @react-navigation/core @react-navigation/native @react-navigation/native-stack @react-navigation/routers @react-navigation/stack react-native-gesture-handler react-native-screens react-native-reanimated dayjs zustand jotai @tanstack/query-core @tanstack/query-sync-storage-persister @tanstack/react-query @tanstack/react-query-persist-client axios jotai-optics lodash react-hook-form react-native-fast-image react-native-get-random-values react-native-simple-toast react-native-url-polyfill zod zod-validation-error @react-native-async-storage/async-storage @react-native-community/hooks @gorhom/bottom-sheet @hookform/resolvers @react-native-community/datetimepicker @react-navigation/material-top-tabs @tanstack/query-async-storage-persister babel-plugin-module-resolver react-native-dotenv react-native-mmkv@^2.12.2 react-native-modal-datetime-picker react-native-pager-view react-native-modal react-native-svg-transformer react-native-url-polyfill uuid @shopify/react-native-skia lottie-react-native@^6.7.2 react-native-haptic-feedback`,
-      { stdio: 'inherit' },
-    );
-    spinner2.succeed('React Native added');
 
-    const spinner3 = ora().start('Adding files');
+    addScriptsInRootPackageJson(workspaceDirectory);
+    executeCommand(
+      workspaceDirectory,
+      `yarn install`,
+      { stdio: 'inherit' },
+    );
+
+    spinner2.succeed(styles.success('React Native dependencies installed successfully'));
+
+    console.log(`\n${styles.step(3)} ${styles.emoji.tools} ${styles.success('Setting up project configuration')}`);
+    const spinner3 = ora({
+      text: 'Configuring project files...',
+      color: 'cyan'
+    }).start();
+    
     copyDir(`${workspaceDirectory}/.vscode`, `.vscode`);
     copyDir(`${workspaceDirectory}/.husky`, `.husky`);
     copyFile(`${workspaceDirectory}/.prettierrc`, '.prettierrc');
@@ -103,13 +151,15 @@ program
         stdio: 'inherit',
       },
     );
-    addScriptsInRootPackageJson(workspaceDirectory);
-    executeCommand(
-      workspaceDirectory,
-      `npm install`,
-      { stdio: 'inherit' },
-    );
-    spinner3.succeed('Files added');
+
+    spinner3.succeed(styles.success('Project configuration completed'));
+    
+    console.log(`\n${styles.step(4)} ${styles.emoji.code} ${styles.success('Finalizing setup')}`);
+    const spinner4 = ora({
+      text: 'Linking assets...',
+      color: 'cyan'
+    }).start();
+    
     executeCommand(
       mobileDirectory,
       `npx react-native-asset`,
@@ -117,17 +167,22 @@ program
         stdio: 'inherit',
       },
     );
+    
+    spinner4.succeed(styles.success('Assets linked successfully'));
 
-    console.log(chalk.green('Project created successfully!'));
-    console.log(
-      chalk.blue(
-        'Next Steps? Rename your app using https://www.npmjs.com/package/react-native-rename',
-      ),
-    );
-    console.log(
-      chalk.blue("Don't forget to wide search for 'AppsMobile' and replace it with your app name"),
-    );
-    console.log(chalk.blue('Run `npm run serve:mobile` to start the project! Happy coding!'));
+    console.log('\n');
+    console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
+    console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('PROJECT CREATED SUCCESSFULLY') + styles.title('                       ║'));
+    console.log(styles.title('╚════════════════════════════════════════════════════════╝'));
+    console.log('\n');
+    
+    console.log(styles.subtitle('📋 NEXT STEPS:'));
+    console.log(`${styles.emoji.check} ${styles.info('Rename your app:')} ${styles.command('npx react-native-rename <newName>')}`);
+    console.log(`${styles.emoji.warning} ${styles.warning("Don't forget to search for 'AppsMobile' and replace it with your app name")}`);
+    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('npm run serve:mobile')}`);
+    console.log('\n');
+    console.log(styles.highlight(`${styles.emoji.sparkles} Happy coding! ${styles.emoji.sparkles}`));
+    console.log('\n');
   });
 
 program.parse(process.argv);
