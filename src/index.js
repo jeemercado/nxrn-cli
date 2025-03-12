@@ -14,6 +14,7 @@ import {
   removeFile
 } from './utils/index.js';
 
+const version = '2.0.2';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,
@@ -52,7 +53,7 @@ const displayBanner = () => {
 program
   .name('React Native Starter with NX')
   .description('A starter script to create a new React Native project with NX')
-  .version('2.0.1');
+  .version(version);
 
 program
   .command('create [workspace_name]')
