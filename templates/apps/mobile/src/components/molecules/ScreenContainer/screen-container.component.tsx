@@ -1,10 +1,11 @@
 import { useFocusEffect } from '@react-navigation/core';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
   StatusBar,
+  StatusBarStyle,
   StyleProp,
   View,
   ViewStyle,
@@ -17,6 +18,7 @@ import { tw } from '../../../tailwind';
 import { KeyboardAwareScrollView } from '../../atoms';
 
 type Props = SafeAreaProviderProps & {
+  barStyle?: StatusBarStyle;
   scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView>;
   containerStyle?: StyleProp<ViewStyle>;
   excludedEdges?: Edge[];
@@ -39,6 +41,7 @@ const safeAreaViewEdges: Edge[] = Platform.select({
 
 export function ScreenContainer(props: Props) {
   const {
+    barStyle = 'dark-content',
     children,
     containerStyle,
     excludedEdges = [],
@@ -57,17 +60,12 @@ export function ScreenContainer(props: Props) {
       ? safeAreaViewEdges.filter((edge) => !excludedEdges.includes(edge))
       : safeAreaViewEdges;
 
-  useEffect(() => {
-    if (CONFIG.IS_ANDROID) {
-      StatusBar.setBackgroundColor(statusBarColor);
-    }
-  }, [statusBarColor]);
-
   useFocusEffect(() => {
     StatusBar.setHidden(!shouldShowStatusBar);
     if (CONFIG.IS_ANDROID) {
       StatusBar.setBackgroundColor(statusBarColor);
       StatusBar.setTranslucent(!shouldBeTranslucent);
+      StatusBar.setBarStyle(barStyle);
     }
   });
 
@@ -79,7 +77,7 @@ export function ScreenContainer(props: Props) {
   ];
 
   return (
-    <SafeAreaView edges={edges} style={[tw`flex-1 bg-gray-50`, style]}>
+    <SafeAreaView edges={edges} style={[tw`flex-1 bg-white`, style]}>
       {hasScroll ? (
         <KeyboardAwareScrollView
           containerStyle={defaultContainerStyle}

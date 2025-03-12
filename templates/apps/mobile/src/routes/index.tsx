@@ -36,6 +36,7 @@ export default function ApplicationRoutes() {
     if (CONFIG.IS_ANDROID) {
       StatusBar.setBackgroundColor('transparent');
       StatusBar.setTranslucent(true);
+      StatusBar.setBarStyle('dark-content');
     }
   }, []);
 
