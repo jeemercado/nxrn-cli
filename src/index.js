@@ -52,7 +52,7 @@ const displayBanner = () => {
 program
   .name('React Native Starter with NX')
   .description('A starter script to create a new React Native project with NX')
-  .version('2.0.0');
+  .version('2.0.1');
 
 program
   .command('create [workspace_name]')
