@@ -13,8 +13,26 @@ module.exports = {
     }),
   ],
   theme: {
+    // FOR FONTS: This is only for intellisense the real config is in apps/mobile/src/tailwind
     fontFamily: {
-      sans: ['Inter 18pt'],
+      black: 'InterBlack',
+      'black-italic': 'InterBlackItalic',
+      bold: 'InterBold',
+      'bold-italic': 'InterBoldItalic',
+      extrabold: 'InterExtraBold',
+      'extrabold-italic': 'InterExtraBoldItalic',
+      extralight: 'InterExtraLight',
+      'extralight-italic': 'InterExtraLightItalic',
+      light: 'InterLight',
+      'light-italic': 'InterLightItalic',
+      medium: 'InterMedium',
+      'medium-italic': 'InterMediumItalic',
+      sans: 'Inter',
+      'sans-italic': 'InterItalic',
+      semibold: 'InterSemiBold',
+      'semibold-italic': 'InterSemiboldItalic',
+      thin: 'InterThin',
+      'thin-italic': 'InterThinItalic',
     },
     extend: {
       flex: {
