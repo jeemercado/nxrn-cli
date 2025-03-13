@@ -178,7 +178,7 @@ program
     console.log('\n');
     
     console.log(styles.subtitle('📋 NEXT STEPS:'));
-    console.log(`${styles.emoji.check} ${styles.info('Rename your app:')} ${styles.command('npx react-native-rename <newName>')}`);
+    console.log(`${styles.emoji.check} ${styles.info('Rename your app:')} ${styles.command('npx nx-react-native-rename "<newName>" -b "<newBundleId>" ')}`);
     console.log(`${styles.emoji.warning} ${styles.warning("Don't forget to search for 'AppsMobile' and replace it with your app name")}`);
     console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('npm run serve:mobile')}`);
     console.log('\n');
