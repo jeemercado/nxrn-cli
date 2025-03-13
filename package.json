@@ -1,6 +1,6 @@
 {
   "name": "nx-react-native-cli",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A react native starter (with NX) cli script",
   "type": "module",
   "files": [
@@ -15,7 +15,7 @@
   "scripts": {
     "start": "./src/index.js",
     "build": "rm -rf lib && esbuild src/index.js --format=cjs --platform=node --bundle --outfile=lib/index.cjs --minify --analyze",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "example": "npm run relink && npx nxrn create example",
     "example-fresh": "npm run relink && npx nxrn create example-fresh --fresh",
     "generate-diff": "./generate-diff.sh",
