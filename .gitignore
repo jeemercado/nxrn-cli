@@ -149,3 +149,4 @@ example
 example-fresh
 *.diff
 diff.html
+lib/
