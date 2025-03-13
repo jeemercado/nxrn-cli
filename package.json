@@ -10,7 +10,7 @@
     "package.json"
   ],
   "bin": {
-    "nxrn": "./lib/index.cjs"
+    "nx-react-native-cli": "./lib/index.cjs"
   },
   "scripts": {
     "start": "./src/index.js",
