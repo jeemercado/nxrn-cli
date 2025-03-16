@@ -28,7 +28,7 @@
     "example-fresh": "npm run relink && npx nxrn create example-fresh --fresh",
     "generate-diff": "./generate-diff.sh",
     "show-diff": "npx diff2html -s side --sc --hc --cs light -i file -o preview -F diff.html -- diff.diff && open diff.html",
-    "relink": "npm unlink nxrn && npm run prepublish && npm link",
+    "relink": "npm unlink nxrn && npm run prepublishOnly && npm link",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
