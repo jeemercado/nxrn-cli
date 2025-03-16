@@ -52,7 +52,7 @@ export const removeFile = (filePath) => {
   });
 };
 
-export const addScriptsInRootPackageJson = (dir) => {
+export const addScriptsInRootPackageJson = (rootDir) => {
   const scripts = {
     "doctor": "npx nx react-native doctor",
     "android": "npx nx run-android mobile --skip-nx-cache",
@@ -76,11 +76,25 @@ export const addScriptsInRootPackageJson = (dir) => {
     "pod-install": "cd apps/mobile && npm run pod-install",
     "react-native-asset": "cd apps/mobile && npx react-native-asset"
   };
-  const packageJsonPath = path.join(dir, 'package.json');
+  const packageJsonPath = path.join(rootDir, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   packageJson.dependencies = { ...packageJson.dependencies, ...dependenciesJson.dependencies };
   packageJson.devDependencies = { ...packageJson.devDependencies, ...devDependenciesJson.devDependencies };
   packageJson.scripts = { ...packageJson.scripts, ...scripts };
 
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+};
+
+
+export const updateScriptsInMobilePackageJson = (rootDir, workspaceName) => {
+  const dir = path.join(rootDir, 'apps/mobile');
+  const scripts = {
+    "xcode": `open -a Xcode ios/${workspaceName}.xcworkspace`,
+  };
+
+  const packageJsonPath = path.join(dir, 'package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  packageJson.scripts = { ...packageJson.scripts, ...scripts };
+  
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };

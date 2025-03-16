@@ -7,6 +7,7 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import {
   addScriptsInRootPackageJson,
+  updateScriptsInMobilePackageJson,
   copyDir,
   copyFile,
   executeCommand,
@@ -14,7 +15,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.0.6';
+const version = '2.0.7';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,
@@ -56,10 +57,10 @@ program
   .version(version);
 
 program
-  .command('create [workspace_name]')
+  .command('create [workspace_name] [bundle_id]')
   .description('create nx workspace with react-native')
   .option('--fresh', 'Create a fresh project without copying template files')
-  .action(async (workspace_name, options) => {
+  .action(async (workspace_name, bundle_id, options) => {
     displayBanner();
     
     if (!workspace_name) {
@@ -73,6 +74,19 @@ program
 
       workspace_name = result.workspace_name;
     }
+
+    if (!bundle_id) {
+      const result = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'bundle_id',
+          message: styles.info('Enter the bundle ID: ex. org.reactjsnative.example'),
+        }
+      ]);
+
+      bundle_id = result.bundle_id;
+    }
+
     const isFresh = options.fresh || false;
 
     const currentPwd = process.cwd();
@@ -86,7 +100,7 @@ program
     }).start();
     
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@19.7.0 --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@19.8.14 --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
       {
         stdio: 'inherit',
       },
@@ -99,7 +113,7 @@ program
       color: 'cyan'
     }).start();
 
-    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@19.7.0 --ignore-scripts`, {
+    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@19.8.14 --ignore-scripts`, {
       stdio: 'inherit',
     });
     executeCommand(
@@ -155,7 +169,6 @@ program
 
     spinner3.succeed(styles.success('Project configuration completed'));
     
-    console.log(`\n${styles.step(4)} ${styles.emoji.code} ${styles.success('Finalizing setup')}`);
     const spinner4 = ora({
       text: 'Linking assets...',
       color: 'cyan'
@@ -171,6 +184,23 @@ program
     
     spinner4.succeed(styles.success('Assets linked successfully'));
 
+    console.log(`\n${styles.step(4)} ${styles.emoji.code} ${styles.success('Finalizing setup')}`);
+    const spinner5 = ora({
+      text: 'Renaming app...',
+      color: 'cyan'
+    }).start();
+
+    executeCommand(
+      mobileDirectory,
+      `npx nx-react-native-rename@latest "${workspace_name}" -b "${bundle_id}" --skipGitStatusCheck --exclude "package.json"`,
+      {
+        stdio: 'inherit',
+      },
+    );
+    updateScriptsInMobilePackageJson(workspaceDirectory, workspace_name);
+
+    spinner5.succeed(styles.success('Mobile package.json updated successfully'));
+
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
     console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('PROJECT CREATED SUCCESSFULLY') + styles.title('                       ║'));
@@ -178,8 +208,6 @@ program
     console.log('\n');
     
     console.log(styles.subtitle('📋 NEXT STEPS:'));
-    console.log(`${styles.emoji.check} ${styles.info('Rename your app:')} ${styles.command('npx nx-react-native-rename "<newName>" -b "<newBundleId>" ')}`);
-    console.log(`${styles.emoji.warning} ${styles.warning("Don't forget to search for 'AppsMobile' and replace it with your app name")}`);
     console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('npm run serve:mobile')}`);
     console.log('\n');
     console.log(styles.highlight(`${styles.emoji.sparkles} Happy coding! ${styles.emoji.sparkles}`));
