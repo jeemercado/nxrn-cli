@@ -15,7 +15,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.0.8';
+const version = '2.1.0';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,
@@ -100,7 +100,7 @@ program
     }).start();
     
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@19.8.14 --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@19.7.0 --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
       {
         stdio: 'inherit',
       },
@@ -113,7 +113,7 @@ program
       color: 'cyan'
     }).start();
 
-    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@19.8.14 --ignore-scripts`, {
+    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@19.7.0 --ignore-scripts`, {
       stdio: 'inherit',
     });
     executeCommand(
