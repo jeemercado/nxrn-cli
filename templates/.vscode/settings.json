@@ -9,6 +9,9 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "tailwindCSS.classAttributes": ["className", "style"],
   "tailwindCSS.experimental.classRegex": ["tw`([^`]*)", ["tw.style\\(([^)]*)\\)", "'([^']*)'"]]
