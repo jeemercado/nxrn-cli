@@ -1,3 +1,4 @@
+import { BottomSheetTextInput as RNBottomSheetTextInput } from '@gorhom/bottom-sheet';
 import React, { useState } from 'react';
 import {
   TextInput as RNTextInput,
@@ -17,13 +18,13 @@ import {
 } from '@/tailwind';
 import { DefaultComponentProps } from '@/types';
 
-export type TextInputProps = DefaultComponentProps &
+export type BottomSheetTextInputProps = DefaultComponentProps &
   RNTextInputProps & {
     textInputRef?: React.RefObject<RNTextInput>;
     textStyle?: StyleProp<TextStyle>;
   };
 
-export function TextInput(props: TextInputProps) {
+export function BottomSheetTextInput(props: BottomSheetTextInputProps) {
   const {
     isDisabled = false,
     multiline = false,
@@ -58,9 +59,9 @@ export function TextInput(props: TextInputProps) {
         style,
       ]}
     >
-      <RNTextInput
+      <RNBottomSheetTextInput
         {...DefaultNameInputProps}
-        ref={textInputRef}
+        ref={textInputRef as unknown as any}
         editable={!isDisabled}
         multiline={multiline}
         placeholder={placeholder}

@@ -120,7 +120,10 @@ export function BottomSheet(props: BottomSheetProps) {
         style,
       ]}
     >
-      <BottomSheetScrollView contentContainerStyle={contentContainerStyle}>
+      <BottomSheetScrollView
+        contentContainerStyle={contentContainerStyle}
+        keyboardShouldPersistTaps="handled"
+      >
         {children}
       </BottomSheetScrollView>
     </BottomSheetModal>

@@ -1,5 +1,8 @@
 import { TextInputProps } from 'react-native';
 
+export const TEXT_INPUT_MIN_HEIGHT = 100;
+export const TEXT_INPUT_LINE_HEIGHT = 21;
+
 export const DefaultPhonePadInputProps: TextInputProps = {
   autoCapitalize: 'none',
   autoCorrect: false,
