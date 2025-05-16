@@ -3,31 +3,51 @@
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 
-@implementation AppDelegate
+#import <RCTDefaultReactNativeFactoryDelegate.h>
+#import <RCTReactNativeFactory.h>
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-  self.moduleName = @"AppsMobile";
-  self.dependencyProvider = [RCTAppDependencyProvider new];
-  // You can add your custom initial props in the dictionary below.
-  // They will be passed down to the ViewController used by React Native.
-  self.initialProps = @{};
+@interface ReactNativeDelegate : RCTDefaultReactNativeFactoryDelegate
+@end
 
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
-}
+@implementation ReactNativeDelegate
 
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
-{
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
   return [self bundleURL];
 }
 
-- (NSURL *)bundleURL
-{
+- (NSURL *)bundleURL {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"src/main"];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+@end
+
+@interface AppDelegate ()
+@property (nonatomic, strong) ReactNativeDelegate *reactNativeDelegate;
+@property (nonatomic, strong) RCTReactNativeFactory *reactNativeFactory;
+@end
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  ReactNativeDelegate *delegate = [ReactNativeDelegate new];
+  RCTReactNativeFactory *factory = [[RCTReactNativeFactory alloc] initWithDelegate:delegate];
+  delegate.dependencyProvider = [RCTAppDependencyProvider new];
+  
+  self.reactNativeDelegate = delegate;
+  self.reactNativeFactory = factory;
+  
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  
+  [factory startReactNativeWithModuleName:@"AppsMobile" 
+                                  inWindow:self.window 
+                           launchOptions:launchOptions];
+  
+  return YES;
 }
 
 @end

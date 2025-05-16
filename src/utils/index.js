@@ -55,9 +55,10 @@ export const removeFile = (filePath) => {
 export const addScriptsInRootPackageJson = (rootDir) => {
   const scripts = {
     "doctor": "npx nx react-native doctor",
-    "android": "npx nx run-android mobile --skip-nx-cache",
+    "android": "cd apps/mobile && npm run run-android",
     "android:connect": "cd apps/mobile && npm run android:connect",
     "check-env:mobile": "./check-env.sh apps/mobile/.env apps/mobile/.env.template",
+    "ios": "cd apps/mobile && npm run run-ios",
     "clean": "./clean-generated-outputs.sh",
     "create-env": "printenv > ",
     "lint:all": "npx nx run-many -t lint -p mobile --parallel=1 --skip-nx-cache",

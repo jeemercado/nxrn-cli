@@ -5,7 +5,7 @@
 
 ## 📦 Introduction
 
-A comprehensive React Native mobile application starter kit built with Nx workspace. This package provides a carefully curated set of tools and libraries to streamline your mobile app development process with React Native 0.78.0 and the New Architecture.
+A comprehensive React Native mobile application starter kit built with Nx workspace. This package provides a carefully curated set of tools and libraries to streamline your mobile app development process with React Native 0.79.2 and the New Architecture.
 
 <h2 id="🛠-usage">🛠 Usage</h2>
 <p>Generate a new Nx workspace with the React Native preset:</p>
@@ -16,7 +16,7 @@ A comprehensive React Native mobile application starter kit built with Nx worksp
 
 ### Core Technologies
 - **Yarn**: Fast, reliable, and secure dependency management
-- **React Native 0.78.0**: Latest version with New Architecture support
+- **React Native 0.79.2**: Latest version with New Architecture support
 - **TypeScript**: Strongly typed JavaScript for better code quality
 - **Nx Workspace**: Powerful monorepo tooling for scalable development
 - **TailwindCSS via TWRNC**: Utility-first CSS framework for fast UI development

@@ -5,7 +5,7 @@
   "scripts": {
     "android:connect": "adb reverse tcp:8081 tcp:8081",
     "start": "npx nx start mobile --skip-nx-cache",
-    "run-ios": "npx nx run-ios mobile --skip-nx-cache --scheme=Dev --simulator='iPhone 13 (A96A9251-28D7-48B1-8F6A-20B6CCB8810B)'",
+    "run-ios": "npx nx run-ios mobile --skip-nx-cache --scheme=Dev --simulator='iPhone 16'",
     "run-android": "npx nx run-android mobile --skip-nx-cache",
     "ensure-symlink": "npx nx ensure-symlink mobile",
     "sync-deps": "npx nx sync-deps mobile",
