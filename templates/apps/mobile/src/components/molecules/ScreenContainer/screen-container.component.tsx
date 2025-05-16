@@ -20,7 +20,7 @@ import { tw } from '@/tailwind';
 
 type Props = SafeAreaProviderProps & {
   barStyle?: StatusBarStyle;
-  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView>;
+  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView | null>;
   containerStyle?: StyleProp<ViewStyle>;
   excludedEdges?: Edge[];
   extraBottomPadding?: number;
@@ -29,6 +29,7 @@ type Props = SafeAreaProviderProps & {
   shouldShowStatusBar?: boolean;
   shouldBeTranslucent?: boolean;
   statusBarColor?: string;
+  useSafeAreaView?: boolean;
   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 };
 
@@ -55,12 +56,8 @@ export function ScreenContainer(props: Props) {
     shouldShowStatusBar = true,
     statusBarColor = 'transparent',
     style,
+    useSafeAreaView = true,
   } = props;
-  const edges =
-    excludedEdges.length > 0
-      ? safeAreaViewEdges.filter((edge) => !excludedEdges.includes(edge))
-      : safeAreaViewEdges;
-
   useFocusEffect(() => {
     StatusBar.setHidden(!shouldShowStatusBar);
     if (CONFIG.IS_ANDROID) {
@@ -76,6 +73,30 @@ export function ScreenContainer(props: Props) {
     // eslint-disable-next-line no-magic-numbers
     extraBottomPadding && tw`pb-[${extraBottomPadding + 50}px]`,
   ];
+
+  if (!useSafeAreaView) {
+    return (
+      <View style={[tw`flex-1 bg-white`, style]}>
+        {hasScroll ? (
+          <KeyboardAwareScrollView
+            containerStyle={defaultContainerStyle}
+            refreshControl={refreshControl as ReactElement<RefreshControlProps>}
+            scrollViewRef={scrollViewRef}
+            onScroll={onScroll}
+          >
+            {children}
+          </KeyboardAwareScrollView>
+        ) : (
+          <View style={defaultContainerStyle}>{children}</View>
+        )}
+      </View>
+    );
+  }
+
+  const edges =
+    excludedEdges.length > 0
+      ? safeAreaViewEdges.filter((edge) => !excludedEdges.includes(edge))
+      : safeAreaViewEdges;
 
   return (
     <SafeAreaView edges={edges} style={[tw`flex-1 bg-white`, style]}>

@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import React from 'react';
 import {
   NativeScrollEvent,
@@ -14,7 +15,7 @@ import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {
   children?: React.ReactNode;
-  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView>;
+  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView | null>;
   containerStyle?: StyleProp<ViewStyle>;
   extraBottomPadding?: number;
   refreshControl?: React.ReactElement<RefreshControlProps> | undefined;
@@ -39,7 +40,6 @@ export function KeyboardAwareScrollView(props: Props) {
   const defaultContainerStyle = [
     defaultStyle,
     containerStyle,
-    // eslint-disable-next-line no-magic-numbers
     extraBottomPadding && tw`pb-[${extraBottomPadding + 50}px]`,
   ];
 

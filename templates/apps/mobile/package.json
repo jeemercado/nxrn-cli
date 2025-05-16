@@ -15,7 +15,7 @@
     "pre-build": "npm run ensure-symlink && npm run sync-deps && npm run pod-install",
     "list:ios-configurations": "cd ios && xcodebuild -list",
     "list:ios-devices": "xcrun xctrace list devices",
-    "xcode": "open -a Xcode ios/AppsMobile.xcworkspace",
+    "xcode": "xed -b ios",
     "touch-xcode": "cd ios && touch .xcode.env",
     "check-env:mobile": "cd ../.. && npm run check-env:mobile",
     "setup-fastlane": "rbenv local && bundle install && bundle update",

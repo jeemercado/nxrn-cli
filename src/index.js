@@ -7,7 +7,6 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import {
   addScriptsInRootPackageJson,
-  updateScriptsInMobilePackageJson,
   copyDir,
   copyFile,
   executeCommand,
@@ -197,8 +196,6 @@ program
         stdio: 'inherit',
       },
     );
-    updateScriptsInMobilePackageJson(workspaceDirectory, workspace_name);
-
     spinner5.succeed(styles.success('Mobile package.json updated successfully'));
 
     console.log('\n');

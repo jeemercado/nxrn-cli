@@ -84,17 +84,3 @@ export const addScriptsInRootPackageJson = (rootDir) => {
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };
-
-
-export const updateScriptsInMobilePackageJson = (rootDir, workspaceName) => {
-  const dir = path.join(rootDir, 'apps/mobile');
-  const scripts = {
-    "xcode": `open -a Xcode ios/${workspaceName}.xcworkspace`,
-  };
-
-  const packageJsonPath = path.join(dir, 'package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  packageJson.scripts = { ...packageJson.scripts, ...scripts };
-  
-  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-};

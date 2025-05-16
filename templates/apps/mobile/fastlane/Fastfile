@@ -290,7 +290,7 @@ platform :android do
     desc "Build Android (Production Server)"
     lane :prod do 
         begin
-            flavor = 'prod'
+            flavor = 'production'
             setup_android()
             # TODO: COMMENT IF FIREBASE PROD IS LINKED TO GOOGLE PLAY
             android_build_apk(flavor)

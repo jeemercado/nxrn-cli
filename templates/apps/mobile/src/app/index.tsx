@@ -7,7 +7,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import { MMKV } from 'react-native-mmkv';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { enableFreeze } from 'react-native-screens';
 import { useDeviceContext } from 'twrnc';
 
 import { StorageManager } from '@/components';
@@ -17,8 +16,6 @@ import { tw } from '@/tailwind';
 import 'react-native-url-polyfill/auto';
 
 LogBox.ignoreLogs(['VirtualizedLists', 'onAnimatedValueUpdate']);
-
-enableFreeze(true);
 
 const CACHE_TIME = 0;
 const STALE_TIME = 0;
