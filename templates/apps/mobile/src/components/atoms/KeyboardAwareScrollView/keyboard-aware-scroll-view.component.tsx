@@ -7,15 +7,15 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import { KeyboardAwareScrollView as RNKeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Animated from 'react-native-reanimated';
+import { ScrollView as RNScrollView } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView as RNKeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { tw } from '@/tailwind';
 import { DefaultComponentProps } from '@/types';
 
 type Props = DefaultComponentProps & {
   children?: React.ReactNode;
-  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView | null>;
+  scrollViewRef?: React.RefObject<RNScrollView | null>;
   containerStyle?: StyleProp<ViewStyle>;
   extraBottomPadding?: number;
   refreshControl?: React.ReactElement<RefreshControlProps> | undefined;
@@ -23,8 +23,6 @@ type Props = DefaultComponentProps & {
 };
 
 const defaultStyle = tw`grow`;
-
-const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(RNKeyboardAwareScrollView);
 
 export function KeyboardAwareScrollView(props: Props) {
   const {
@@ -44,17 +42,18 @@ export function KeyboardAwareScrollView(props: Props) {
   ];
 
   return (
-    <AnimatedKeyboardAwareScrollView
+    <RNKeyboardAwareScrollView
       ref={scrollViewRef}
+      bottomOffset={100}
       contentContainerStyle={[defaultContainerStyle, containerStyle]}
-      enableResetScrollToCoords={false}
       keyboardShouldPersistTaps="handled"
       refreshControl={refreshControl}
       scrollEventThrottle={16}
+      ScrollViewComponent={RNScrollView}
       style={style}
       onScroll={onScroll}
     >
       {children}
-    </AnimatedKeyboardAwareScrollView>
+    </RNKeyboardAwareScrollView>
   );
 }

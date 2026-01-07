@@ -14,7 +14,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.2.1';
+const version = '2.3.0';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,

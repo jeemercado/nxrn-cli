@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/core';
+import { useFocusEffect } from '@react-navigation/native';
 import React, { ReactElement } from 'react';
 import {
   NativeScrollEvent,
@@ -11,7 +11,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { KeyboardAwareScrollView as RNKeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ScrollView as RNScrollView } from 'react-native-gesture-handler';
 import { Edge, SafeAreaProviderProps, SafeAreaView } from 'react-native-safe-area-context';
 
 import { KeyboardAwareScrollView } from '@/components';
@@ -20,7 +20,7 @@ import { tw } from '@/tailwind';
 
 type Props = SafeAreaProviderProps & {
   barStyle?: StatusBarStyle;
-  scrollViewRef?: React.RefObject<RNKeyboardAwareScrollView | null>;
+  scrollViewRef?: React.RefObject<RNScrollView | null>;
   containerStyle?: StyleProp<ViewStyle>;
   excludedEdges?: Edge[];
   extraBottomPadding?: number;

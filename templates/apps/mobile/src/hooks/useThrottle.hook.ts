@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { throttle, DebouncedFunc } from 'lodash';
+import { throttle, DebouncedFunc } from 'lodash-es';
 import { useCallback } from 'react';
 
 export function useThrottle<T extends (...args: any[]) => any>(

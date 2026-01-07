@@ -3,13 +3,13 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "strict": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
   },
   "files": ["../../node_modules/@nx/react-native/typings/svg.d.ts"],
-  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.spec.tsx", "test-setup.ts"],
+  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.spec.tsx", "**/testHelpers", "**/__mocks__", "**/__fixtures__", "**/node_modules", "**/Pods", "test-setup.ts"],
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
 }

@@ -1,9 +1,9 @@
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import { StateStorage } from 'zustand/middleware';
 
 import CONFIG from '@/config';
 
-const storage = new MMKV({
+const storage = createMMKV({
   encryptionKey: CONFIG.STORAGE_KEY,
   id: 'mmkv',
 });
@@ -14,6 +14,6 @@ export const MmkvStorage: StateStorage = {
 
     return value ?? null;
   },
-  removeItem: (name) => storage.delete(name),
+  removeItem: (name) => storage.remove(name),
   setItem: (name, value) => storage.set(name, value),
 };

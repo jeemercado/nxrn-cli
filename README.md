@@ -16,7 +16,7 @@ A comprehensive React Native mobile application starter kit built with Nx worksp
 
 ### Core Technologies
 - **Yarn**: Fast, reliable, and secure dependency management
-- **React Native 0.79.2**: Latest version with New Architecture support
+- **React Native 0.83.0**: Latest version with New Architecture support
 - **TypeScript**: Strongly typed JavaScript for better code quality
 - **Nx Workspace**: Powerful monorepo tooling for scalable development
 - **TailwindCSS via TWRNC**: Utility-first CSS framework for fast UI development
@@ -25,7 +25,6 @@ A comprehensive React Native mobile application starter kit built with Nx worksp
 - **React Native Reanimated**: Powerful animations for smooth user experiences
 - **React Native Gesture Handler**: Fluid gesture-based interactions
 - **React Native SVG**: SVG support for vector graphics
-- **Lottie**: Beautiful animations with minimal effort
 - **@shopify/react-native-skia**: High-performance 2D graphics
 - **@gorhom/bottom-sheet**: Customizable bottom sheet component
 

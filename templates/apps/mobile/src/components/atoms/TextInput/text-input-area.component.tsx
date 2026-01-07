@@ -1,27 +1,25 @@
-import { useState, useEffect } from 'react';
+import { DefaultComponentProps } from '@/types/component.type';
+import { useEffect, useState } from 'react';
 import {
   TextInput as RNTextInput,
   TextInputProps as RNTextInputProps,
   StyleProp,
   TextStyle,
 } from 'react-native';
-
-import { TextInput } from '@/components/atoms/TextInput';
-import {
-  DefaultTextAreaInputProps,
-  TEXT_INPUT_MIN_HEIGHT,
-} from '@/components/atoms/TextInput/constants';
-import { getTextInputHeightAdjustment } from '@/components/atoms/TextInput/util';
-import { DefaultComponentProps } from '@/types';
+import { DefaultTextAreaInputProps, TEXT_INPUT_MIN_HEIGHT } from './constants';
+import { TextInput } from './text-input.component';
+import { getTextInputHeightAdjustment } from './util';
 
 export type TextInputAreaProps = DefaultComponentProps &
   RNTextInputProps & {
     textInputRef?: React.RefObject<RNTextInput>;
     textStyle?: StyleProp<TextStyle>;
+    autoAdjustHeight?: boolean;
   };
 
 export function TextInputArea(props: TextInputAreaProps) {
   const {
+    autoAdjustHeight = false,
     numberOfLines = DefaultTextAreaInputProps.numberOfLines as number,
     onChangeText,
     textStyle,
@@ -33,22 +31,22 @@ export function TextInputArea(props: TextInputAreaProps) {
   function handleOnChangeText(text: string) {
     onChangeText?.(text);
   }
+
   useEffect(() => {
-    if (!value) {
+    if (!value || !autoAdjustHeight) {
       return;
     }
 
-    const newLines = value.split(/\r\n|\r|\n/).length;
+    const newLines = value.split(/[\r\n]+/).length;
 
     if (numberOfNewLines !== newLines) {
       setNumberOfNewLines(newLines);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
     <TextInput
+      testID="text-input-area"
       {...DefaultTextAreaInputProps}
       multiline
       numberOfLines={numberOfLines}
@@ -61,6 +59,7 @@ export function TextInputArea(props: TextInputAreaProps) {
         },
       ]}
       value={value}
+      showClearButton={false}
       onChangeText={handleOnChangeText}
       {...extraProps}
     />

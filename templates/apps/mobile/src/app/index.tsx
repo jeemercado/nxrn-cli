@@ -5,7 +5,8 @@ import React from 'react';
 import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
-import { MMKV } from 'react-native-mmkv';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { createMMKV } from 'react-native-mmkv';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDeviceContext } from 'twrnc';
 
@@ -28,7 +29,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const storage = new MMKV({
+const storage = createMMKV({
   encryptionKey: CONFIG.STORAGE_KEY,
   id: 'react-query-persist',
 });
@@ -39,7 +40,9 @@ export const MmkvStorage: AsyncStorage = {
 
     return value ?? null;
   },
-  removeItem: (name) => storage.delete(name),
+  removeItem: (name) => {
+    storage.remove(name);
+  },
   setItem: (name, value) => storage.set(name, value),
 };
 
@@ -57,11 +60,13 @@ function Application() {
   return (
     <GestureHandlerRootView style={tw`flex-1`}>
       <SafeAreaProvider>
-        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-          <StorageManager>
-            <ApplicationRoutes />
-          </StorageManager>
-        </PersistQueryClientProvider>
+        <KeyboardProvider>
+          <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+            <StorageManager>
+              <ApplicationRoutes />
+            </StorageManager>
+          </PersistQueryClientProvider>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

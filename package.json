@@ -1,6 +1,6 @@
 {
   "name": "nx-react-native-cli",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "A react native starter (with NX) cli script",
   "type": "module",
   "files": [
@@ -24,11 +24,11 @@
     "start": "./src/index.js",
     "build": "rm -rf lib && esbuild src/index.js --format=cjs --platform=node --bundle --outfile=lib/index.cjs --minify --analyze",
     "prepublishOnly": "npm run build",
-    "example": "rm -rf example && npm run relink && npx nxrn create example",
-    "example-fresh": "rm -rf example && npm run relink && npx nxrn create example-fresh --fresh",
+    "example": "rm -rf example && npm run relink && npx nx-react-native-cli create example com.jeemercado.example",
+    "example-fresh": "rm -rf example && npm run relink && npx nx-react-native-cli create example-fresh --fresh",
     "generate-diff": "./generate-diff.sh",
     "show-diff": "npx diff2html -s side --sc --hc --cs light -i file -o preview -F diff.html -- diff.diff && open diff.html",
-    "relink": "npm unlink nxrn && npm run prepublishOnly && npm link",
+    "relink": "npm unlink nx-react-native-cli && npm run prepublishOnly && npm link",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -37,14 +37,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "inquirer": "^10.0.2",
-    "ora": "^8.0.1",
-    "prettier": "^3.3.3"
+    "chalk": "5.3.0",
+    "commander": "12.1.0",
+    "inquirer": "10.0.2",
+    "ora": "8.0.1",
+    "prettier": "3.3.3"
   },
   "devDependencies": {
-    "diff2html-cli": "^5.2.15",
-    "esbuild": "^0.23.0"
+    "diff2html-cli": "5.2.15",
+    "esbuild": "0.23.0"
   }
 }

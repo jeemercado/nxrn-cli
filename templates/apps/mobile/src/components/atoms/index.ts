@@ -3,6 +3,7 @@ export * from './Button';
 export * from './Divider';
 export * from './ExcludedEdges';
 export * from './InputLayout';
+export * from './KeyboardAccessory';
 export * from './KeyboardAwareScrollView';
 export * from './ListLoadingItem';
 export * from './Modal';

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { debounce, DebouncedFunc } from 'lodash';
+import { debounce, DebouncedFunc } from 'lodash-es';
 import { useCallback } from 'react';
 
 export function useDebounce<T extends (...args: any[]) => any>(
