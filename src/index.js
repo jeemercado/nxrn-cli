@@ -14,7 +14,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.3.0';
+const version = '2.3.1';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,
@@ -205,7 +205,7 @@ program
     console.log('\n');
     
     console.log(styles.subtitle('📋 NEXT STEPS:'));
-    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('npm run serve:mobile')}`);
+    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('yarn serve:mobile')}`);
     console.log('\n');
     console.log(styles.highlight(`${styles.emoji.sparkles} Happy coding! ${styles.emoji.sparkles}`));
     console.log('\n');

@@ -11,6 +11,8 @@ import {
   View,
 } from 'react-native';
 
+import { DefaultNameInputProps } from './constants';
+
 import { CrossIcon } from '@/icons';
 import {
   colors,
@@ -21,7 +23,6 @@ import {
   tw,
 } from '@/tailwind';
 import { DefaultComponentProps } from '@/types/component.type';
-import { DefaultNameInputProps } from './constants';
 
 export type BottomSheetTextInputProps = DefaultComponentProps &
   RNTextInputProps & {
@@ -35,16 +36,16 @@ export function BottomSheetTextInput(props: BottomSheetTextInputProps) {
   const {
     isDisabled = false,
     multiline = false,
+    onBlur,
     onChangeText,
+    onClearButtonPress,
+    onFocus,
     placeholder,
+    showClearButton = true,
     style,
     textInputRef,
     textStyle,
     value,
-    showClearButton = true,
-    onClearButtonPress,
-    onFocus,
-    onBlur,
     ...extraProps
   } = props;
   const [isClearButtonVisible, setIsClearButtonVisible] = useState<boolean>(false);
@@ -102,16 +103,16 @@ export function BottomSheetTextInput(props: BottomSheetTextInputProps) {
         selectionColor={colors.primary}
         style={[defaultInputTextStyle, textStyle]}
         value={value}
-        onBlur={handleOnBlur}
+        onBlur={(e) => handleOnBlur(e as NativeSyntheticEvent<TextInputFocusEventData>)}
         onChangeText={handleOnChangeText}
-        onFocus={handleOnFocus}
+        onFocus={(e) => handleOnFocus(e as NativeSyntheticEvent<TextInputFocusEventData>)}
         {...extraProps}
       />
       {isClearButtonVisible && (
         <Pressable
           hitSlop={30}
-          testID="clear-button"
           style={tw`items-center justify-center`}
+          testID="clear-button"
           onPress={handleOnClearPress}
         >
           <CrossIcon />

@@ -5,7 +5,7 @@
 
 ## 📦 Introduction
 
-A comprehensive React Native mobile application starter kit built with Nx workspace. This package provides a carefully curated set of tools and libraries to streamline your mobile app development process with React Native 0.79.2 and the New Architecture.
+A comprehensive React Native mobile application starter kit built with Nx workspace. This package provides a carefully curated set of tools and libraries to streamline your mobile app development process with React Native 0.83.0 and the New Architecture.
 
 <h2 id="🛠-usage">🛠 Usage</h2>
 <p>Generate a new Nx workspace with the React Native preset:</p>
@@ -59,13 +59,13 @@ To get started with development, follow these simple commands:
 
 ```bash
 # Start the Metro bundler
-npm run serve:mobile
+yarn serve:mobile
 
 # Build and run on Android
-npm run android
+yarn android
 
 # Open the iOS project in Xcode for building and running
-npm run xcode
+yarn xcode
 ```
 
 These commands will help you:

@@ -10,6 +10,7 @@ import {
 
 import { DefaultNameInputProps } from './constants';
 
+import { CrossIcon } from '@/icons';
 import {
   colors,
   defaultInputContainerStyle,
@@ -19,7 +20,6 @@ import {
   tw,
 } from '@/tailwind';
 import { DefaultComponentProps } from '@/types/component.type';
-import { CrossIcon } from '@/icons';
 
 export type TextInputProps = DefaultComponentProps &
   RNTextInputProps & {

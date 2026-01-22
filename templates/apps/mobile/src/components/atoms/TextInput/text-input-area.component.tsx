@@ -1,4 +1,3 @@
-import { DefaultComponentProps } from '@/types/component.type';
 import { useEffect, useState } from 'react';
 import {
   TextInput as RNTextInput,
@@ -6,9 +5,12 @@ import {
   StyleProp,
   TextStyle,
 } from 'react-native';
+
 import { DefaultTextAreaInputProps, TEXT_INPUT_MIN_HEIGHT } from './constants';
 import { TextInput } from './text-input.component';
 import { getTextInputHeightAdjustment } from './util';
+
+import { DefaultComponentProps } from '@/types/component.type';
 
 export type TextInputAreaProps = DefaultComponentProps &
   RNTextInputProps & {
@@ -50,6 +52,7 @@ export function TextInputArea(props: TextInputAreaProps) {
       {...DefaultTextAreaInputProps}
       multiline
       numberOfLines={numberOfLines}
+      showClearButton={false}
       textStyle={[
         textStyle,
         {
@@ -59,7 +62,6 @@ export function TextInputArea(props: TextInputAreaProps) {
         },
       ]}
       value={value}
-      showClearButton={false}
       onChangeText={handleOnChangeText}
       {...extraProps}
     />
