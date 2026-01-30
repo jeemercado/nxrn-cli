@@ -14,7 +14,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.4.0';
+const version = '2.5.0';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -62,6 +62,7 @@ program
   .option('--fresh', 'Create a fresh project without copying template files')
   .option('--nx-version <version>', 'Specify Nx version to use', defaultNxVersion)
   .option('--skip-install', 'Skip yarn install after adding dependencies')
+  .option('--skip-configs', 'Skip copying prettier, eslint, and husky configs')
   .action(async (workspace_name, bundle_id, options) => {
     displayBanner();
     
@@ -92,6 +93,7 @@ program
     const isFresh = options.fresh || false;
     const nxVersion = options.nxVersion || defaultNxVersion;
     const skipInstall = options.skipInstall || false;
+    const skipConfigs = options.skipConfigs || false;
 
     const currentPwd = process.cwd();
     const workspaceDirectory = `${currentPwd}/${workspace_name}`;
@@ -152,22 +154,28 @@ program
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
-    copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion);
+    copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
     
     if (!isFresh) {
       copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
-      copyDir(`${workspaceDirectory}/.husky`, `.husky`, 'shared');
-      copyFile(`${workspaceDirectory}/.prettierrc`, '.prettierrc', nxVersion);
-      copyFile(`${workspaceDirectory}/.prettierignore`, '.prettierignore', nxVersion);
-      copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json', nxVersion);
+      
+      if (!skipConfigs) {
+        copyDir(`${workspaceDirectory}/.husky`, `.husky`, 'shared');
+        copyFile(`${workspaceDirectory}/.prettierrc`, '.prettierrc', nxVersion, defaultNxVersion);
+        copyFile(`${workspaceDirectory}/.prettierignore`, '.prettierignore', nxVersion, defaultNxVersion);
+        copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json', nxVersion, defaultNxVersion);
+      } else {
+        console.log(styles.info('Skipping prettier, eslint, and husky configs (--skip-configs flag set)'));
+      }
+      
       removeDir(`${workspaceDirectory}/apps/mobile/src`);
       removeFile(`${workspaceDirectory}/apps/mobile/.vite.config.ts`);
       removeFile(`${workspaceDirectory}/apps/mobile/.babelrc.js`);
       copyDir(`${workspaceDirectory}/apps`, `apps`, 'shared');
-      copyDir(`${workspaceDirectory}/apps`, `apps`, nxVersion);
+      copyDir(`${workspaceDirectory}/apps`, `apps`, nxVersion, defaultNxVersion);
     }
 
-    copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `apps/mobile/.ignorefile`, nxVersion);
+    copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `apps/mobile/.ignorefile`, nxVersion, defaultNxVersion);
     
     executeCommand(
       workspaceDirectory,
@@ -212,6 +220,207 @@ program
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
     console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('PROJECT CREATED SUCCESSFULLY') + styles.title('                       ║'));
+    console.log(styles.title('╚════════════════════════════════════════════════════════╝'));
+    console.log('\n');
+    
+    console.log(styles.subtitle('📋 NEXT STEPS:'));
+    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('yarn serve:mobile')}`);
+    console.log('\n');
+    console.log(styles.highlight(`${styles.emoji.sparkles} Happy coding! ${styles.emoji.sparkles}`));
+    console.log('\n');
+  });
+
+program
+  .command('add [app_name] [bundle_id]')
+  .description('Add React Native to existing Nx workspace')
+  .option('--fresh', 'Add without copying template files')
+  .option('--skip-install', 'Skip yarn install after adding dependencies')
+  .option('--skip-configs', 'Skip copying prettier, eslint, and husky configs')
+  .action(async (app_name, bundle_id, options) => {
+    displayBanner();
+    
+    const currentPwd = process.cwd();
+    
+    // Check if we're in an NX workspace
+    const fs = await import('fs');
+    const path = await import('path');
+    const workspaceDirectory = currentPwd;
+    const mobileDirectory = `${workspaceDirectory}/apps/mobile`;
+    
+    if (!fs.existsSync(path.join(currentPwd, 'nx.json'))) {
+      console.log(styles.error('❌ Error: Not in an NX workspace directory!'));
+      console.log(styles.info('Please run this command from the root of your NX workspace.'));
+      process.exit(1);
+    }
+
+    // Check if apps/mobile already exists
+    if (fs.existsSync(mobileDirectory)) {
+      console.log(styles.error('❌ Error: apps/mobile folder already exists!'));
+      console.log(styles.info('Please remove or rename the existing apps/mobile folder before proceeding.'));
+      process.exit(1);
+    }
+
+    // Read package.json to get NX version and workspace name
+    let nxVersion = defaultNxVersion;
+    
+    try {
+      const packageJsonPath = path.join(currentPwd, 'package.json');
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      
+      // Extract NX version from dependencies or devDependencies
+      const nxWorkspaceVersion = 
+        packageJson.dependencies?.['@nx/workspace'] || 
+        packageJson.devDependencies?.['@nx/workspace'] ||
+        packageJson.dependencies?.['@nrwl/workspace'] || 
+        packageJson.devDependencies?.['@nrwl/workspace'];
+      
+      if (nxWorkspaceVersion) {
+        // Remove ^ or ~ from version string
+        nxVersion = nxWorkspaceVersion.replace(/^[\^~]/, '');
+        console.log(styles.info(`📦 Detected NX version: ${styles.highlight(nxVersion)}`));
+      } else {
+        console.log(styles.warning(`⚠️  Could not detect NX version, using default: ${nxVersion}`));
+      }
+    } catch (error) {
+      console.log(styles.warning('⚠️  Could not read package.json, using default NX version'));
+    }
+
+    if (!app_name) {
+      const result = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'app_name',
+          message: styles.info('Enter the app name (for renaming):'),
+        },
+      ]);
+
+      app_name = result.app_name;
+    }
+
+    if (!bundle_id) {
+      const result = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'bundle_id',
+          message: styles.info('Enter the bundle ID: ex. org.reactjsnative.example'),
+        }
+      ]);
+
+      bundle_id = result.bundle_id;
+    }
+
+    const isFresh = options.fresh || false;
+    const skipInstall = options.skipInstall || false;
+    const skipConfigs = options.skipConfigs || false;
+
+
+    console.log(`\n${styles.step(1)} ${styles.emoji.mobile} ${styles.success('Adding React Native to your workspace')}`);
+    const spinner1 = ora({
+      text: 'Installing React Native dependencies...',
+      color: 'cyan'
+    }).start();
+
+    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts`, {
+      stdio: 'inherit',
+    });
+    executeCommand(
+      workspaceDirectory,
+      `npx nx g @nx/react-native:app apps/mobile --bundler vite --install false --skip-nx-cache`,
+      {
+        stdio: 'inherit',
+      },
+    );
+
+    addScriptsInRootPackageJson(workspaceDirectory);
+    
+    if (!skipInstall) {
+      executeCommand(
+        workspaceDirectory,
+        `yarn install`,
+        { stdio: 'inherit' },
+      );
+    } else {
+      console.log(styles.warning('Skipping yarn install (--skip-install flag set)'));
+    }
+
+    spinner1.succeed(styles.success('React Native dependencies installed successfully'));
+
+    console.log(`\n${styles.step(2)} ${styles.emoji.tools} ${styles.success('Setting up project configuration')}`);
+    const spinner2 = ora({
+      text: 'Configuring project files...',
+      color: 'cyan'
+    }).start();
+    
+    copyFile(`${workspaceDirectory}/.gitignore`, '.ignorefile', 'shared');
+    copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
+    copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
+    copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
+    copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
+    
+    if (!isFresh) {
+      copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
+      
+      if (!skipConfigs) {
+        copyDir(`${workspaceDirectory}/.husky`, `.husky`, 'shared');
+        copyFile(`${workspaceDirectory}/.prettierrc`, '.prettierrc', nxVersion, defaultNxVersion);
+        copyFile(`${workspaceDirectory}/.prettierignore`, '.prettierignore', nxVersion, defaultNxVersion);
+        copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json', nxVersion, defaultNxVersion);
+      } else {
+        console.log(styles.info('Skipping prettier, eslint, and husky configs (--skip-configs flag set)'));
+      }
+      
+      removeDir(`${workspaceDirectory}/apps/mobile/src`);
+      removeFile(`${workspaceDirectory}/apps/mobile/.vite.config.ts`);
+      removeFile(`${workspaceDirectory}/apps/mobile/.babelrc.js`);
+      copyDir(`${workspaceDirectory}/apps`, `apps`, 'shared');
+      copyDir(`${workspaceDirectory}/apps`, `apps`, nxVersion, defaultNxVersion);
+    }
+
+    copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `apps/mobile/.ignorefile`, nxVersion, defaultNxVersion);
+    
+    executeCommand(
+      workspaceDirectory,
+      `keytool -genkey -keystore ${workspaceDirectory}/apps/mobile/android/app/dev.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias dev -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" -storepass development -keypass development`,
+      {
+        stdio: 'inherit',
+      },
+    );
+
+    spinner2.succeed(styles.success('Project configuration completed'));
+    
+    const spinner3 = ora({
+      text: 'Linking assets...',
+      color: 'cyan'
+    }).start();
+    
+    executeCommand(
+      mobileDirectory,
+      `npx react-native-asset`,
+      {
+        stdio: 'inherit',
+      },
+    );
+    
+    spinner3.succeed(styles.success('Assets linked successfully'));
+
+    console.log(`\n${styles.step(3)} ${styles.emoji.code} ${styles.success('Finalizing setup')}`);
+    const spinner4 = ora({
+      text: 'Renaming app...',
+      color: 'cyan'
+    }).start();
+
+    executeCommand(
+      mobileDirectory,
+      `npx nx-react-native-rename@latest "${app_name}" -b "${bundle_id}" --skipGitStatusCheck --exclude "package.json"`,
+      {
+        stdio: 'inherit',
+      },
+    );
+    spinner4.succeed(styles.success('Mobile package.json updated successfully'));
+
+    console.log('\n');
+    console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
+    console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('REACT NATIVE ADDED SUCCESSFULLY') + styles.title('                 ║'));
     console.log(styles.title('╚════════════════════════════════════════════════════════╝'));
     console.log('\n');
     

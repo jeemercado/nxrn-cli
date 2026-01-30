@@ -7,10 +7,65 @@
 
 A comprehensive React Native mobile application starter kit built with Nx workspace. This package provides a carefully curated set of tools and libraries to streamline your mobile app development process with React Native 0.83.1 and the New Architecture.
 
-<h2 id="🛠-usage">🛠 Usage</h2>
-<p>Generate a new Nx workspace with the React Native preset:</p>
-<pre><code class="language-bash">npx nx-react-native-cli@latest create
-</code></pre>
+## 🛠 Usage
+
+### Create Command
+
+Create a new Nx workspace with React Native:
+
+**Interactive mode** (omit parameters to get prompts):
+```bash
+npx nx-react-native-cli@latest create
+```
+
+OR
+
+```bash
+npx nx-react-native-cli@latest create [workspace_name] [bundle_id]
+```
+
+**Options:**
+- `--fresh` - Create without copying template files
+- `--nx-version <version>` - Specify Nx version (default: 21.2.2)
+- `--skip-install` - Skip yarn install
+- `--skip-configs` - Skip prettier, eslint, and husky configs
+
+**Examples:**
+```bash
+npx nx-react-native-cli@latest create MyApp com.company.myapp
+npx nx-react-native-cli@latest create MyApp com.company.myapp --skip-configs
+```
+
+### Add Command
+
+Add React Native to an existing Nx workspace:
+
+**Interactive mode** (omit parameters to get prompts):
+```bash
+cd my-existing-workspace
+npx nx-react-native-cli@latest add
+```
+
+OR
+
+```bash
+npx nx-react-native-cli@latest add [app_name] [bundle_id]
+```
+
+
+**Options:**
+- `--fresh` - Add without copying template files
+- `--skip-install` - Skip yarn install
+- `--skip-configs` - Skip prettier, eslint, and husky configs
+
+**Note:** Automatically detects NX version from workspace package.json
+
+**Examples:**
+```bash
+cd my-existing-workspace
+npx nx-react-native-cli@latest add MyApp com.company.myapp
+npx nx-react-native-cli@latest add MyApp com.company.myapp --skip-configs
+```
 
 ## 🚀 Features
 

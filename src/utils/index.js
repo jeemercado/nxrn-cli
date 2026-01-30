@@ -12,8 +12,11 @@ export const executeCommand = (dir, command) => {
   execSync(`cd ${dir} && ${command}`, { stdio: 'inherit' });
 };
 
-export const copyFile = (destinationPath, fileName, version) => {
-  const sourcePath = path.join(getDirName(), `../templates/${version}/${fileName}`);
+export const copyFile = (destinationPath, fileName, version, defaultVersion) => {
+  let sourcePath = path.join(getDirName(), `../templates/${version}/${fileName}`);
+  if (!fs.existsSync(sourcePath) && defaultVersion) {
+    sourcePath = path.join(getDirName(), `../templates/${defaultVersion}/${fileName}`);
+  }
 
   fs.copyFile(sourcePath, destinationPath, (err) => {
     if (err) {
@@ -23,8 +26,11 @@ export const copyFile = (destinationPath, fileName, version) => {
   });
 };
 
-export const copyDir = (destinationPath, fileName, version) => {
-  const sourcePath = path.join(getDirName(), `../templates/${version}/${fileName}`);
+export const copyDir = (destinationPath, fileName, version, defaultVersion) => {
+  let sourcePath = path.join(getDirName(), `../templates/${version}/${fileName}`);
+  if (!fs.existsSync(sourcePath) && defaultVersion) {
+    sourcePath = path.join(getDirName(), `../templates/${defaultVersion}/${fileName}`);
+  }
 
   fs.cpSync(sourcePath, destinationPath, { recursive: true }, (err) => {
     if (err) {
