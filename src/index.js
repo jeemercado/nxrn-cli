@@ -14,7 +14,8 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.3.1';
+const version = '2.4.0';
+const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,
@@ -59,6 +60,8 @@ program
   .command('create [workspace_name] [bundle_id]')
   .description('create nx workspace with react-native')
   .option('--fresh', 'Create a fresh project without copying template files')
+  .option('--nx-version <version>', 'Specify Nx version to use', defaultNxVersion)
+  .option('--skip-install', 'Skip yarn install after adding dependencies')
   .action(async (workspace_name, bundle_id, options) => {
     displayBanner();
     
@@ -87,6 +90,8 @@ program
     }
 
     const isFresh = options.fresh || false;
+    const nxVersion = options.nxVersion || defaultNxVersion;
+    const skipInstall = options.skipInstall || false;
 
     const currentPwd = process.cwd();
     const workspaceDirectory = `${currentPwd}/${workspace_name}`;
@@ -99,7 +104,7 @@ program
     }).start();
     
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@19.7.0 --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@${nxVersion} --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
       {
         stdio: 'inherit',
       },
@@ -112,7 +117,7 @@ program
       color: 'cyan'
     }).start();
 
-    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@19.7.0 --ignore-scripts`, {
+    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts`, {
       stdio: 'inherit',
     });
     executeCommand(
@@ -124,11 +129,16 @@ program
     );
 
     addScriptsInRootPackageJson(workspaceDirectory);
-    executeCommand(
-      workspaceDirectory,
-      `yarn install`,
-      { stdio: 'inherit' },
-    );
+    
+    if (!skipInstall) {
+      executeCommand(
+        workspaceDirectory,
+        `yarn install`,
+        { stdio: 'inherit' },
+      );
+    } else {
+      console.log(styles.warning('Skipping yarn install (--skip-install flag set)'));
+    }
 
     spinner2.succeed(styles.success('React Native dependencies installed successfully'));
 
@@ -138,26 +148,27 @@ program
       color: 'cyan'
     }).start();
     
-    copyDir(`${workspaceDirectory}/.vscode`, `.vscode`);
-    copyDir(`${workspaceDirectory}/.husky`, `.husky`);
-    copyFile(`${workspaceDirectory}/.prettierrc`, '.prettierrc');
-    copyFile(`${workspaceDirectory}/.prettierignore`, '.prettierignore');
-    copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json');
-    copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json');
-    copyFile(`${workspaceDirectory}/.gitignore`, '.ignorefile');
-    copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version');
-    copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc');
-    copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`);
-    copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`);
+    copyFile(`${workspaceDirectory}/.gitignore`, '.ignorefile', 'shared');
+    copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
+    copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
+    copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
+    copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion);
     
     if (!isFresh) {
+      copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
+      copyDir(`${workspaceDirectory}/.husky`, `.husky`, 'shared');
+      copyFile(`${workspaceDirectory}/.prettierrc`, '.prettierrc', nxVersion);
+      copyFile(`${workspaceDirectory}/.prettierignore`, '.prettierignore', nxVersion);
+      copyFile(`${workspaceDirectory}/.eslintrc.json`, '.eslintrc.json', nxVersion);
       removeDir(`${workspaceDirectory}/apps/mobile/src`);
       removeFile(`${workspaceDirectory}/apps/mobile/.vite.config.ts`);
       removeFile(`${workspaceDirectory}/apps/mobile/.babelrc.js`);
-      copyDir(`${workspaceDirectory}/apps`, `apps`);
+      copyDir(`${workspaceDirectory}/apps`, `apps`, 'shared');
+      copyDir(`${workspaceDirectory}/apps`, `apps`, nxVersion);
     }
 
-    copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `.ignorefile`);
+    copyFile(`${workspaceDirectory}/apps/mobile/.gitignore`, `apps/mobile/.ignorefile`, nxVersion);
+    
     executeCommand(
       workspaceDirectory,
       `keytool -genkey -keystore ${workspaceDirectory}/apps/mobile/android/app/dev.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias dev -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" -storepass development -keypass development`,

@@ -1,17 +1,19 @@
 #!/bin/bash
 
-# Check if an argument is provided
-if [ $# -eq 0 ]; then
-    echo "Error: No argument provided."
-    echo "Usage: $0 <directory_name>"
+# Check if two arguments are provided
+if [ $# -ne 2 ]; then
+    echo "Error: Two directory arguments are required."
+    echo "Usage: $0 <directory1> <directory2>"
+    echo "Example: $0 example-fresh-v21-2-2 example-fresh-v22-0-0"
     exit 1
 fi
 
-# Store the argument in a variable
-directory_name="$1"
-echo "Comparing directory example/${directory_name} and example-fresh/${directory_name}"
+# Compare directories directly
+dir1="$1"
+dir2="$2"
+echo "Comparing directory ${dir1} and ${dir2}"
 
-diff -ruN example/${directory_name} example-fresh/${directory_name} > diff.diff
+diff -ruN "${dir1}" "${dir2}" > diff.diff
 
 npm run show-diff
 

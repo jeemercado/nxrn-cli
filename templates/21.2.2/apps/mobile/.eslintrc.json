@@ -1,0 +1,38 @@
+{
+  "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
+  "ignorePatterns": [
+    "!**/*",
+    ".cache",
+    ".next/**/*",
+    "*.d.ts",
+    "*.spec.ts",
+    "babel.config.js",
+    "jest.config.ts",
+    "metro.config.js",
+    "node_modules",
+    "project.json",
+    "react-native.config.js",
+    "tailwind.config.js",
+    "test-setup.ts",
+    "tsconfig.json",
+    "tsconfig.spec.json",
+    "vite.config.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "import/no-unresolved": "off",
+        "import/extensions": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}

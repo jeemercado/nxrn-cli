@@ -1,6 +1,6 @@
 {
   "name": "nx-react-native-cli",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "A react native starter (with NX) cli script",
   "type": "module",
   "files": [
@@ -24,9 +24,10 @@
     "start": "./src/index.js",
     "build": "rm -rf lib && esbuild src/index.js --format=cjs --platform=node --bundle --outfile=lib/index.cjs --minify --analyze",
     "prepublishOnly": "npm run build",
-    "example": "rm -rf example && npm run relink && npx nx-react-native-cli create example com.jeemercado.example",
-    "example-fresh": "rm -rf example && npm run relink && npx nx-react-native-cli create example-fresh --fresh",
+    "example": "rm -rf example && npm run relink && npx nx-react-native-cli create example com.jeemercado.example --nx-version 21.2.2",
+    "example-fresh": "rm -rf example-fresh && npm run relink && npx nx-react-native-cli create example-fresh com.jeemercado.example --fresh --nx-version 21.2.2",
     "generate-diff": "./generate-diff.sh",
+    "compare-versions": "./compare-versions.sh",
     "show-diff": "npx diff2html -s side --sc --hc --cs light -i file -o preview -F diff.html -- diff.diff && open diff.html",
     "relink": "npm unlink nx-react-native-cli && npm run prepublishOnly && npm link",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -12,8 +12,8 @@ export const executeCommand = (dir, command) => {
   execSync(`cd ${dir} && ${command}`, { stdio: 'inherit' });
 };
 
-export const copyFile = (destinationPath, fileName) => {
-  const sourcePath = path.join(getDirName(), `../templates/${fileName}`);
+export const copyFile = (destinationPath, fileName, version) => {
+  const sourcePath = path.join(getDirName(), `../templates/${version}/${fileName}`);
 
   fs.copyFile(sourcePath, destinationPath, (err) => {
     if (err) {
@@ -23,8 +23,8 @@ export const copyFile = (destinationPath, fileName) => {
   });
 };
 
-export const copyDir = (destinationPath, fileName) => {
-  const sourcePath = path.join(getDirName(), `../templates/${fileName}`);
+export const copyDir = (destinationPath, fileName, version) => {
+  const sourcePath = path.join(getDirName(), `../templates/${version}/${fileName}`);
 
   fs.cpSync(sourcePath, destinationPath, { recursive: true }, (err) => {
     if (err) {
