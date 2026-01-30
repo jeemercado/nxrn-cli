@@ -27,13 +27,15 @@ npx nx-react-native-cli@latest create [workspace_name] [bundle_id]
 **Options:**
 - `--fresh` - Create without copying template files
 - `--nx-version <version>` - Specify Nx version (default: 21.2.2)
-- `--skip-install` - Skip yarn install
+- `--package-manager <pm>` - Package manager to use: yarn or npm (default: yarn)
+- `--skip-install` - Skip package install
 - `--skip-configs` - Skip prettier, eslint, and husky configs
 
 **Examples:**
 ```bash
 npx nx-react-native-cli@latest create MyApp com.company.myapp
 npx nx-react-native-cli@latest create MyApp com.company.myapp --skip-configs
+npx nx-react-native-cli@latest create MyApp com.company.myapp --package-manager npm
 ```
 
 ### Add Command
@@ -55,7 +57,8 @@ npx nx-react-native-cli@latest add [app_name] [bundle_id]
 
 **Options:**
 - `--fresh` - Add without copying template files
-- `--skip-install` - Skip yarn install
+- `--package-manager <pm>` - Package manager to use: yarn or npm (default: yarn)
+- `--skip-install` - Skip package install
 - `--skip-configs` - Skip prettier, eslint, and husky configs
 
 **Note:** Automatically detects NX version from workspace package.json
@@ -65,6 +68,7 @@ npx nx-react-native-cli@latest add [app_name] [bundle_id]
 cd my-existing-workspace
 npx nx-react-native-cli@latest add MyApp com.company.myapp
 npx nx-react-native-cli@latest add MyApp com.company.myapp --skip-configs
+npx nx-react-native-cli@latest add MyApp com.company.myapp --package-manager npm
 ```
 
 ## 🚀 Features

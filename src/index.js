@@ -14,7 +14,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.5.1';
+const version = '2.5.2';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -61,7 +61,8 @@ program
   .description('create nx workspace with react-native')
   .option('--fresh', 'Create a fresh project without copying template files')
   .option('--nx-version <version>', 'Specify Nx version to use', defaultNxVersion)
-  .option('--skip-install', 'Skip yarn install after adding dependencies')
+  .option('--package-manager <pm>', 'Package manager to use (yarn or npm)', 'yarn')
+  .option('--skip-install', 'Skip package install after adding dependencies')
   .option('--skip-configs', 'Skip copying prettier, eslint, and husky configs')
   .action(async (workspace_name, bundle_id, options) => {
     displayBanner();
@@ -92,6 +93,7 @@ program
 
     const isFresh = options.fresh || false;
     const nxVersion = options.nxVersion || defaultNxVersion;
+    const packageManager = options.packageManager || 'yarn';
     const skipInstall = options.skipInstall || false;
     const skipConfigs = options.skipConfigs || false;
 
@@ -106,7 +108,7 @@ program
     }).start();
     
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@${nxVersion} --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=yarn --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@${nxVersion} --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=${packageManager} --nxCloud skip`,
       {
         stdio: 'inherit',
       },
@@ -119,7 +121,11 @@ program
       color: 'cyan'
     }).start();
 
-    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts`, {
+    const addCommand = packageManager === 'npm' 
+      ? `npm install --save-dev @nx/react-native@${nxVersion} --ignore-scripts`
+      : `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts`;
+    
+    executeCommand(workspaceDirectory, addCommand, {
       stdio: 'inherit',
     });
     executeCommand(
@@ -133,13 +139,14 @@ program
     addScriptsInRootPackageJson(workspaceDirectory);
     
     if (!skipInstall) {
+      const installCommand = packageManager === 'npm' ? 'npm install' : 'yarn install';
       executeCommand(
         workspaceDirectory,
-        `yarn install`,
+        installCommand,
         { stdio: 'inherit' },
       );
     } else {
-      console.log(styles.warning('Skipping yarn install (--skip-install flag set)'));
+      console.log(styles.warning(`Skipping ${packageManager} install (--skip-install flag set)`));
     }
 
     spinner2.succeed(styles.success('React Native dependencies installed successfully'));
@@ -224,7 +231,8 @@ program
     console.log('\n');
     
     console.log(styles.subtitle('📋 NEXT STEPS:'));
-    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('yarn serve:mobile')}`);
+    const serveCommand = packageManager === 'npm' ? 'npm run serve:mobile' : 'yarn serve:mobile';
+    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command(serveCommand)}`);
     console.log('\n');
     console.log(styles.highlight(`${styles.emoji.sparkles} Happy coding! ${styles.emoji.sparkles}`));
     console.log('\n');
@@ -234,7 +242,8 @@ program
   .command('add [app_name] [bundle_id]')
   .description('Add React Native to existing Nx workspace')
   .option('--fresh', 'Add without copying template files')
-  .option('--skip-install', 'Skip yarn install after adding dependencies')
+  .option('--package-manager <pm>', 'Package manager to use (yarn or npm)', 'yarn')
+  .option('--skip-install', 'Skip package install after adding dependencies')
   .option('--skip-configs', 'Skip copying prettier, eslint, and husky configs')
   .action(async (app_name, bundle_id, options) => {
     displayBanner();
@@ -310,6 +319,7 @@ program
     }
 
     const isFresh = options.fresh || false;
+    const packageManager = options.packageManager || 'yarn';
     const skipInstall = options.skipInstall || false;
     const skipConfigs = options.skipConfigs || false;
 
@@ -320,7 +330,11 @@ program
       color: 'cyan'
     }).start();
 
-    executeCommand(workspaceDirectory, `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts`, {
+    const addCommandForAdd = packageManager === 'npm' 
+      ? `npm install --save-dev @nx/react-native@${nxVersion} --ignore-scripts --ignore-workspace-root-check`
+      : `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts --ignore-workspace-root-check`;
+    
+    executeCommand(workspaceDirectory, addCommandForAdd, {
       stdio: 'inherit',
     });
     executeCommand(
@@ -334,13 +348,14 @@ program
     addScriptsInRootPackageJson(workspaceDirectory);
     
     if (!skipInstall) {
+      const installCommandForAdd = packageManager === 'npm' ? 'npm install' : 'yarn install';
       executeCommand(
         workspaceDirectory,
-        `yarn install`,
+        installCommandForAdd,
         { stdio: 'inherit' },
       );
     } else {
-      console.log(styles.warning('Skipping yarn install (--skip-install flag set)'));
+      console.log(styles.warning(`Skipping ${packageManager} install (--skip-install flag set)`));
     }
 
     spinner1.succeed(styles.success('React Native dependencies installed successfully'));
@@ -425,7 +440,8 @@ program
     console.log('\n');
     
     console.log(styles.subtitle('📋 NEXT STEPS:'));
-    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command('yarn serve:mobile')}`);
+    const serveCommandForAdd = packageManager === 'npm' ? 'npm run serve:mobile' : 'yarn serve:mobile';
+    console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command(serveCommandForAdd)}`);
     console.log('\n');
     console.log(styles.highlight(`${styles.emoji.sparkles} Happy coding! ${styles.emoji.sparkles}`));
     console.log('\n');
