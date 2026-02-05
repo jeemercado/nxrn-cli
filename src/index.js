@@ -14,7 +14,7 @@ import {
   removeFile
 } from './utils/index.js';
 
-const version = '2.5.3';
+const version = '2.5.4';
 const defaultNxVersion = '19.7.0';
 const styles = {
   title: chalk.bold.cyan,

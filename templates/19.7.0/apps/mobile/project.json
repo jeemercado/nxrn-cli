@@ -14,7 +14,7 @@
     },
     "start": {
       "executor": "@nx/react-native:start",
-      "dependsOn": ["check-env", "ensure-symlink", "pod-install"],
+      "dependsOn": ["check-env", "pod-install"],
       "options": {
         "port": 8081,
         "resetCache": true,
@@ -29,12 +29,12 @@
     },
     "run-ios": {
       "executor": "@nx/react-native:run-ios",
-      "dependsOn": ["ensure-symlink", "pod-install"],
+      "dependsOn": ["pod-install"],
       "options": {}
     },
     "bundle-ios": {
       "executor": "@nx/react-native:bundle",
-      "dependsOn": ["ensure-symlink"],
+      "dependsOn": [],
       "outputs": ["{options.bundleOutput}"],
       "options": {
         "entryFile": "src/main.tsx",
@@ -44,7 +44,7 @@
     },
     "run-android": {
       "executor": "@nx/react-native:run-android",
-      "dependsOn": ["ensure-symlink"],
+      "dependsOn": [],
       "options": {
         "mode": "debug",
         "tasks": "installDevDebug"
@@ -56,13 +56,13 @@
         "{projectRoot}/android/app/build/outputs/bundle",
         "{projectRoot}/android/app/build/outputs/apk"
       ],
-      "dependsOn": ["ensure-symlink"],
+      "dependsOn": [],
       "options": {}
     },
     "build-ios": {
       "executor": "@nx/react-native:build-ios",
       "outputs": ["{projectRoot}/ios/build/Build"],
-      "dependsOn": ["ensure-symlink", "pod-install"],
+      "dependsOn": [ "pod-install"],
       "options": {}
     },
     "pod-install": {
@@ -73,7 +73,7 @@
     },
     "bundle-android": {
       "executor": "@nx/react-native:bundle",
-      "dependsOn": ["ensure-symlink"],
+      "dependsOn": [],
       "outputs": ["{options.bundleOutput}"],
       "options": {
         "entryFile": "src/main.tsx",

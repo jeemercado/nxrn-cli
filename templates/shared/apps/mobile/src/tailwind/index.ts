@@ -64,7 +64,7 @@ export const focusedInputStyle = (isFocused: boolean) => isFocused && tw``;
 
 export const errorTextStyle = (err: boolean) => err && tw`text-red-600`;
 
-export const defaultInputContainerStyle = tw`flex-row rounded-xl border border-gray-900 p-3`;
+export const defaultInputContainerStyle = tw`ios:p-3 android:p-1 flex-row rounded-xl border border-gray-900`;
 export const defaultInputTextStyle = tw`flex-1 font-normal text-gray-950`;
 
 export const colors = {
