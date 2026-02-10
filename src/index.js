@@ -16,7 +16,7 @@ import {
   setupIosDevSchemeAndConfigurations
 } from './utils/index.js';
 
-const version = '2.6.1';
+const version = '2.6.2';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -126,7 +126,7 @@ program
 
     const addCommand = packageManager === 'npm' 
       ? `npm install --save-dev @nx/react-native@${nxVersion} --ignore-scripts`
-      : `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts`;
+      : `yarn add -D @nx/react-native@${nxVersion} @nx/eslint-plugin@${nxVersion} eslint-plugin-jsx-a11y --ignore-scripts`;
     
     executeCommand(workspaceDirectory, addCommand, {
       stdio: 'inherit',
