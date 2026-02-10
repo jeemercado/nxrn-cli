@@ -14,7 +14,7 @@
     },
     "start": {
       "executor": "@nx/react-native:start",
-      "dependsOn": ["check-env", "pod-install"],
+      "dependsOn": ["check-env", "sync-deps", "pod-install"],
       "options": {
         "port": 8081,
         "resetCache": true,

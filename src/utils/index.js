@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import ora from 'ora';
 import dependenciesJson from './dependencies.json';
 import devDependenciesJson from './devDependencies.json';
 
@@ -90,4 +91,35 @@ export const addScriptsInRootPackageJson = (rootDir) => {
   packageJson.scripts = { ...packageJson.scripts, ...scripts };
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+};
+
+export const disableNxTui = (workspaceDirectory) => {
+  const nxJsonPath = path.join(workspaceDirectory, 'nx.json');
+  if (!fs.existsSync(nxJsonPath)) {
+    return;
+  }
+
+  const nxJson = JSON.parse(fs.readFileSync(nxJsonPath, 'utf-8'));
+  nxJson.tui = {
+    ...(nxJson.tui || {}),
+    enabled: false
+  };
+
+  fs.writeFileSync(nxJsonPath, JSON.stringify(nxJson, null, 2));
+};
+
+export const setupIosDevSchemeAndConfigurations = (mobileDirectory, styles) => {
+  const spinner = ora({
+    text: 'Configuring iOS Dev scheme and build configurations...',
+    color: 'cyan'
+  }).start();
+
+  try {
+    executeCommand(mobileDirectory, 'bundle check || bundle install');
+    executeCommand(mobileDirectory, 'bundle exec ruby ./scripts/setup-ios-dev-scheme.rb');
+    spinner.succeed(styles.success('iOS Dev scheme and build configurations configured successfully'));
+  } catch (error) {
+    spinner.fail(styles.error('Failed to configure iOS Dev scheme and build configurations'));
+    throw error;
+  }
 };

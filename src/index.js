@@ -9,13 +9,15 @@ import {
   addScriptsInRootPackageJson,
   copyDir,
   copyFile,
+  disableNxTui,
   executeCommand,
   removeDir,
-  removeFile
+  removeFile,
+  setupIosDevSchemeAndConfigurations
 } from './utils/index.js';
 
-const version = '2.5.4';
-const defaultNxVersion = '19.7.0';
+const version = '2.6.0';
+const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
   subtitle: chalk.cyan,
@@ -108,11 +110,12 @@ program
     }).start();
     
     execSync(
-      `cd ${currentPwd} && npx create-nx-workspace@${nxVersion} --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=${packageManager} --nxCloud skip`,
+      `cd ${currentPwd} && npx create-nx-workspace@${nxVersion} --preset apps --workspaceType integrated --name ${workspace_name}  --package-manager=${packageManager} --interactive false --nxCloud skip`,
       {
         stdio: 'inherit',
       },
     );
+    disableNxTui(workspaceDirectory);
     spinner1.succeed(styles.success('Nx workspace created successfully'));
 
     console.log(`\n${styles.step(2)} ${styles.emoji.mobile} ${styles.success('Adding React Native to your workspace')}`);
@@ -162,6 +165,7 @@ program
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
+    copyDir(`${workspaceDirectory}/apps/mobile/scripts`, `apps/mobile/scripts`, 'shared');
     
     if (!isFresh) {
       copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
@@ -223,6 +227,8 @@ program
       },
     );
     spinner5.succeed(styles.success('Mobile package.json updated successfully'));
+
+    setupIosDevSchemeAndConfigurations(mobileDirectory, styles);
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
@@ -371,6 +377,7 @@ program
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
+    copyDir(`${workspaceDirectory}/apps/mobile/scripts`, `apps/mobile/scripts`, 'shared');
     
     if (!isFresh) {
       copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
@@ -432,6 +439,8 @@ program
       },
     );
     spinner4.succeed(styles.success('Mobile package.json updated successfully'));
+
+    setupIosDevSchemeAndConfigurations(mobileDirectory, styles);
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
