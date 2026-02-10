@@ -249,7 +249,7 @@ def publish_bundle(flavor)
     UI.message("Uploading aab build to Firebase...")
     release = firebase_app_distribution(
         service_credentials_file: service_account_path,
-        app: ENV['FASTLANE_FIREBASE_APP_ID'],
+        app: ENV['FASTLANE_FIREBASE_APP_ID_ANDROID'],
         android_artifact_type: "AAB",
         android_artifact_path: "./android/app/build/outputs/bundle/#{flavor}Release/app-#{flavor}-release.aab",
         release_notes: ENV["FASTLANE_CHANGELOGS"],
@@ -261,7 +261,7 @@ def publish_apk(flavor)
     UI.message("Uploading apk build to Firebase...")
     release = firebase_app_distribution(
         service_credentials_file: service_account_path,
-        app: ENV['FASTLANE_FIREBASE_APP_ID'],
+        app: ENV['FASTLANE_FIREBASE_APP_ID_ANDROID'],
         android_artifact_type: "APK",
         android_artifact_path: "./android/app/build/outputs/apk/#{flavor}/release/app-#{flavor}-release.apk",
         release_notes: ENV["FASTLANE_CHANGELOGS"],

@@ -16,7 +16,7 @@ import {
   setupIosDevSchemeAndConfigurations
 } from './utils/index.js';
 
-const version = '2.6.2';
+const version = '2.6.3';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,

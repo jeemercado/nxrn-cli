@@ -1,54 +1,39 @@
 import { StateCreator, create } from 'zustand';
 import { PersistOptions, createJSONStorage, persist } from 'zustand/middleware';
 
+import { createUserSlice, UserSlice } from './user.slice';
+
 import { MmkvStorage } from '@/stores/mmkvStorage';
 
-const initialState = {
-  _hasHydrated: false,
-  user: null,
-};
-
-// TODO: Replace this with actual user type from api-lib
-type User = {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-};
-
-export type LocalStorageState = {
+export type LocalStorageStore = UserSlice & {
   _hasHydrated: boolean;
   setHasHydrated: (hasHydrated: boolean) => void;
-  setUser: (user: User | null) => void;
-  signOut: () => void;
-  user: User | null;
+  clear: () => void;
 };
 
 type MyPersist = (
-  config: StateCreator<LocalStorageState>,
-  options: PersistOptions<LocalStorageState>,
-) => StateCreator<LocalStorageState>;
+  config: StateCreator<LocalStorageStore>,
+  options: PersistOptions<LocalStorageStore>,
+) => StateCreator<LocalStorageStore>;
 
-export const useLocalStorageState = create<LocalStorageState, []>(
+export const useLocalStorageStore = create<LocalStorageStore, []>(
   (persist as unknown as MyPersist)(
-    (set, get) => ({
-      _hasHydrated: initialState._hasHydrated,
-      setHasHydrated: (hasHydrated) =>
-        set({
-          _hasHydrated: hasHydrated,
-        }),
-      setUser: (user) =>
-        set({
-          user,
-        }),
-      signOut: () => {
-        set({
-          user: initialState.user,
-        });
-      },
-      user: initialState.user,
-    }),
+    (set, get, store) =>
+      (() => {
+        const userSlice = createUserSlice(set, get, store);
+
+        return {
+          ...userSlice,
+          _hasHydrated: false,
+          clear: () => {
+            userSlice.signOut();
+          },
+          setHasHydrated: (hasHydrated) =>
+            set({
+              _hasHydrated: hasHydrated,
+            }),
+        };
+      })(),
     {
       name: 'local-storage',
       onRehydrateStorage: () => (state) => {
