@@ -46,6 +46,7 @@
       "executor": "@nx/react-native:run-android",
       "dependsOn": [],
       "options": {
+        "appIdSuffix": "dev",
         "mode": "debug",
         "tasks": "installDevDebug"
       }
