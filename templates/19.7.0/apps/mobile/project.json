@@ -63,7 +63,7 @@
     "build-ios": {
       "executor": "@nx/react-native:build-ios",
       "outputs": ["{projectRoot}/ios/build/Build"],
-      "dependsOn": [ "pod-install"],
+      "dependsOn": ["pod-install"],
       "options": {}
     },
     "pod-install": {

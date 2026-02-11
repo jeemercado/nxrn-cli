@@ -43,7 +43,12 @@ rm -rf "$app_rn_android_gradle_path"
 echo "Installing dependencies..."
 yarn install
 
-echo "Installing pods..."
-yarn run pod-install
+# Only install pods on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "macOS detected - Installing pods..."
+  yarn run pod-install
+else
+  echo "Non-macOS platform - Skipping pod install (iOS-only)"
+fi
 
 echo "Done!"

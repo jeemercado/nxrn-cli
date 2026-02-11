@@ -81,7 +81,7 @@ export const addScriptsInRootPackageJson = (rootDir) => {
     "deploy-android:dev": "cd apps/mobile && npm run deploy-android:dev",
     "deploy-ios:dev": "cd apps/mobile && npm run deploy-ios:dev",
     "ios-certificates": "cd apps/mobile && npm run ios-certificates",
-    "pod-install": "cd apps/mobile && npm run pod-install",
+    "pod-install": "cd apps/mobile && npm run pod-install-conditional",
     "react-native-asset": "cd apps/mobile && npx react-native-asset"
   };
   const packageJsonPath = path.join(rootDir, 'package.json');
