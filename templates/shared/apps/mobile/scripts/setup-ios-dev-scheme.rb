@@ -207,12 +207,13 @@ def upsert_firebase_environment_script_phase(app_target)
     GOOGLESERVICE_INFO_DEV=${PROJECT_DIR}/Firebase/Dev/${GOOGLESERVICE_INFO_PLIST}
     #GOOGLESERVICE_INFO_STAGING=${PROJECT_DIR}/Firebase/Staging/${GOOGLESERVICE_INFO_PLIST}
     GOOGLESERVICE_INFO_PROD=${PROJECT_DIR}/Firebase/Prod/${GOOGLESERVICE_INFO_PLIST}
-    # Make sure the dev version of GoogleService-Info.plist exists
+    HAS_DEV_PLIST=false
+    HAS_PROD_PLIST=false
+
     echo "Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_DEV}"
-    if [ ! -f "${GOOGLESERVICE_INFO_DEV}" ]
+    if [ -f "${GOOGLESERVICE_INFO_DEV}" ]
     then
-    echo "No Dev GoogleService-Info.plist found. Skipping Firebase plist setup."
-    exit 0
+    HAS_DEV_PLIST=true
     fi
     # Make sure the staging version of GoogleService-Info.plist exists
     # echo "Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_STAGING}"
@@ -221,11 +222,15 @@ def upsert_firebase_environment_script_phase(app_target)
     # echo "No Staging GoogleService-Info.plist found. Please ensure it's in the proper directory."
     # exit 1
     # fi
-    # Make sure the prod version of GoogleService-Info.plist exists
     echo "Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_PROD}"
-    if [ ! -f "${GOOGLESERVICE_INFO_PROD}" ]
+    if [ -f "${GOOGLESERVICE_INFO_PROD}" ]
     then
-    echo "No Prod GoogleService-Info.plist found. Skipping Firebase plist setup."
+    HAS_PROD_PLIST=true
+    fi
+
+    if [ "${HAS_DEV_PLIST}" != "true" ] && [ "${HAS_PROD_PLIST}" != "true" ]
+    then
+    echo "No Dev/Prod GoogleService-Info.plist found. Skipping Firebase plist setup."
     exit 0
     fi
 
@@ -241,9 +246,13 @@ def upsert_firebase_environment_script_phase(app_target)
     PLIST_DESTINATION=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app
     echo "Will copy ${GOOGLESERVICE_INFO_PLIST} to final destination: ${PLIST_DESTINATION}"
 
-    # Copy over the prod GoogleService-Info.plist for Release builds
     if [ "${SCHEME}" == "Dev" ]
     then
+    if [ "${HAS_DEV_PLIST}" != "true" ]
+    then
+    echo "Dev scheme detected but no Dev GoogleService-Info.plist found. Skipping Firebase plist setup."
+    exit 0
+    fi
     echo "Using DEV ${GOOGLESERVICE_INFO_DEV}"
     cp "${GOOGLESERVICE_INFO_DEV}" "${PLIST_DESTINATION}"
     # elif [ "${SCHEME}" == "Staging" ]
@@ -251,6 +260,11 @@ def upsert_firebase_environment_script_phase(app_target)
     # echo "Using STAGING ${GOOGLESERVICE_INFO_STAGING}"
     # cp "${GOOGLESERVICE_INFO_STAGING}" "${PLIST_DESTINATION}"
     else
+    if [ "${HAS_PROD_PLIST}" != "true" ]
+    then
+    echo "Prod scheme detected but no Prod GoogleService-Info.plist found. Skipping Firebase plist setup."
+    exit 0
+    fi
     echo "Using PROD ${GOOGLESERVICE_INFO_PROD}"
     cp "${GOOGLESERVICE_INFO_PROD}" "${PLIST_DESTINATION}"
     fi
