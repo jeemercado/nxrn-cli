@@ -63,7 +63,7 @@ const CustomBackdrop = ({
 
   // styles
   const containerStyle = useMemo(
-    () => [style, tw`bg-black-950/60`, containerAnimatedStyle],
+    () => [style, tw`bg-black/60`, containerAnimatedStyle],
     [style, containerAnimatedStyle],
   );
 

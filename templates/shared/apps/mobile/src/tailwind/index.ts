@@ -64,8 +64,11 @@ export const focusedInputStyle = (isFocused: boolean) => isFocused && tw``;
 
 export const errorTextStyle = (err: boolean) => err && tw`text-red-600`;
 
-export const defaultInputContainerStyle = tw`ios:p-3 android:p-1 flex-row rounded-xl border border-gray-900`;
-export const defaultInputTextStyle = tw`flex-1 font-normal text-gray-950`;
+export const defaultInputContainerStyle = tw`ios:px-4 ios:py-3.5 android:py-1 android:px-3 android:min-h-[50px] flex-row rounded-xl border border-[#3a4556] bg-[#2a3544]`;
+export const defaultInputTextStyle = [
+  tw`flex-1 font-normal text-[#f8f9fa]`,
+  CONFIG.IS_ANDROID ? { textAlignVertical: 'center' } : null,
+];
 
 export const colors = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
