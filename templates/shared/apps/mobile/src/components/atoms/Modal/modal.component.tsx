@@ -45,6 +45,7 @@ function AndroidModal(props: ModalProps) {
 
   return (
     <RNBuiltInModal
+      statusBarTranslucent
       transparent
       animationType="fade"
       style={[tw`m-0`, style]}

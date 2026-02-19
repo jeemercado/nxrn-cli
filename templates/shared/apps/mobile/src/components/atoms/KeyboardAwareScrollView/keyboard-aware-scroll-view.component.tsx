@@ -3,12 +3,14 @@ import React from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Platform,
   RefreshControlProps,
+  ScrollView as NativeScrollView,
   ScrollViewProps,
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import { ScrollView as RNScrollView } from 'react-native-gesture-handler';
+import { ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView as RNKeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { tw } from '@/tailwind';
@@ -17,7 +19,7 @@ import { DefaultComponentProps } from '@/types';
 type Props = DefaultComponentProps &
   ScrollViewProps & {
     children?: React.ReactNode;
-    scrollViewRef?: React.RefObject<RNScrollView | null>;
+    scrollViewRef?: React.RefObject<NativeScrollView | null>;
     containerStyle?: StyleProp<ViewStyle>;
     extraBottomPadding?: number;
     refreshControl?: React.ReactElement<RefreshControlProps> | undefined;
@@ -50,6 +52,11 @@ export function KeyboardAwareScrollView(props: Props) {
     extraBottomPadding && tw`pb-[${extraBottomPadding + 50}px]`,
   ];
 
+  // Android: gesture-handler ScrollView doesn't support RefreshControl properly.
+  // Fall back to RN's built-in ScrollView when refreshControl is provided on Android.
+  const ScrollViewComponent =
+    refreshControl && Platform.OS === 'android' ? NativeScrollView : GHScrollView;
+
   return (
     <RNKeyboardAwareScrollView
       ref={scrollViewRef}
@@ -59,7 +66,7 @@ export function KeyboardAwareScrollView(props: Props) {
       keyboardShouldPersistTaps="handled"
       refreshControl={refreshControl}
       scrollEventThrottle={16}
-      ScrollViewComponent={RNScrollView}
+      ScrollViewComponent={ScrollViewComponent}
       style={style}
       onScroll={onScroll}
       {...rest}

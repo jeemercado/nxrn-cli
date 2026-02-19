@@ -60,7 +60,7 @@ function Application() {
   return (
     <GestureHandlerRootView style={tw`flex-1`}>
       <SafeAreaProvider>
-        <KeyboardProvider>
+        <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
           <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
             <StorageManager>
               <ApplicationRoutes />
