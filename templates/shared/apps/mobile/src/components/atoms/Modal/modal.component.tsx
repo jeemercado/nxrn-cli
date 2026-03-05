@@ -1,7 +1,14 @@
 /* eslint-disable no-magic-numbers */
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import React, { useCallback, useState } from 'react';
-import { Keyboard, Pressable, Modal as RNBuiltInModal, StyleProp, ViewStyle } from 'react-native';
+import {
+  Keyboard,
+  Pressable,
+  Modal as RNBuiltInModal,
+  StyleProp,
+  View,
+  ViewStyle,
+} from 'react-native';
 import RNModal from 'react-native-modal';
 
 import CONFIG from '@/config';
@@ -35,7 +42,12 @@ function IOSModal(props: ModalProps) {
       onBackButtonPress={onBackButtonPress}
       onBackdropPress={onBackdropPress}
     >
-      <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+      <>
+        <Pressable style={tw`absolute h-full w-full`} onPress={onBackdropPress}>
+          <View style={tw`h-full w-full bg-black/60`} />
+        </Pressable>
+        <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+      </>
     </RNModal>
   );
 }
@@ -52,11 +64,12 @@ function AndroidModal(props: ModalProps) {
       visible={isVisible}
       onRequestClose={onBackButtonPress}
     >
-      <Pressable style={tw`flex-1 bg-black/60`} onPress={onBackdropPress}>
-        <Pressable style={tw`flex-1`}>
-          <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+      <>
+        <Pressable style={tw`absolute h-full w-full`} onPress={onBackdropPress}>
+          <View style={tw`h-full w-full bg-black/60`} />
         </Pressable>
-      </Pressable>
+        <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+      </>
     </RNBuiltInModal>
   );
 }

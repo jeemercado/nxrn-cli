@@ -116,6 +116,7 @@ buck-out/
 
 # Ruby / CocoaPods
 **/ios/Pods/
+**/ios/.pods-checksum
 **/vendor/bundle/
 
 # iOS build logs

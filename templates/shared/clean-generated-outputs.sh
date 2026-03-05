@@ -34,6 +34,10 @@ rm -rf "$app_rn_node_modules_path"
 echo "Deleting $app_rn_ios_pods_path..."
 rm -rf "$app_rn_ios_pods_path"
 
+app_rn_ios_pods_checksum="apps/$app_rn_name/ios/.pods-checksum"
+echo "Deleting $app_rn_ios_pods_checksum..."
+rm -f "$app_rn_ios_pods_checksum"
+
 echo "Deleting $app_rn_ios_build_path..."
 rm -rf "$app_rn_ios_build_path"
 

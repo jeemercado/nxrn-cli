@@ -39,7 +39,7 @@ export function ScreenHeader(props: Props) {
         {extraActionComponent ? (
           extraActionComponent
         ) : (
-          <GearIcon height={25} style={tw`text-black-950`} width={25} />
+          <GearIcon height={25} style={tw`text-black`} width={25} />
         )}
       </View>
     </TouchableOpacity>

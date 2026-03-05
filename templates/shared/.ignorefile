@@ -74,6 +74,7 @@ DerivedData
 # Android/IntelliJ
 #
 build/
+.kotlin
 .idea
 .gradle
 local.properties

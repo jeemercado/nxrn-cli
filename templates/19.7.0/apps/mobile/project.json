@@ -7,14 +7,14 @@
   "// targets": "to see all targets run: nx show project mobile --web",
   "targets": {
     "check-env": {
-      "executor": "nx:run-script",
+      "executor": "nx:run-commands",
       "options": {
-        "script": "check-env:mobile"
+        "command": "./check-env.sh apps/mobile/.env apps/mobile/.env.template"
       }
     },
     "start": {
       "executor": "@nx/react-native:start",
-      "dependsOn": ["check-env", "sync-deps", "pod-install"],
+      "dependsOn": ["check-env", "pod-install"],
       "options": {
         "port": 8081,
         "resetCache": true,
@@ -28,9 +28,11 @@
       }
     },
     "run-ios": {
-      "executor": "@nx/react-native:run-ios",
+      "executor": "nx:run-commands",
       "dependsOn": ["pod-install"],
-      "options": {}
+      "options": {
+        "command": "cd apps/mobile && ./run-ios.sh"
+      }
     },
     "bundle-ios": {
       "executor": "@nx/react-native:bundle",
@@ -43,12 +45,10 @@
       }
     },
     "run-android": {
-      "executor": "@nx/react-native:run-android",
+      "executor": "nx:run-commands",
       "dependsOn": [],
       "options": {
-        "appIdSuffix": "dev",
-        "mode": "debug",
-        "tasks": "installDevDebug"
+        "command": "cd apps/mobile && ./run-android.sh"
       }
     },
     "build-android": {
@@ -67,9 +67,15 @@
       "options": {}
     },
     "pod-install": {
-      "executor": "nx:run-script",
+      "executor": "nx:run-commands",
       "options": {
-        "script": "bundle:pod-install"
+        "command": "cd apps/mobile && ./pod-install.sh"
+      }
+    },
+    "pod-install:force": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/mobile && ./ios-only.sh 'cd ios && bundle install && bundle exec pod install --repo-update && cd .. && ./export-node-binary.sh'"
       }
     },
     "bundle-android": {
@@ -81,14 +87,6 @@
         "platform": "android",
         "bundleOutput": "dist/apps/mobile/android/main.jsbundle"
       }
-    },
-    "sync-deps": {
-      "executor": "@nx/react-native:sync-deps",
-      "options": {}
-    },
-    "ensure-symlink": {
-      "executor": "@nx/react-native:ensure-symlink",
-      "options": {}
     },
     "lint": {
       "executor": "@nx/eslint:lint",
