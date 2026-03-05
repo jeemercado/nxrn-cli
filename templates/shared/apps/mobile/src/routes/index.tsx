@@ -2,6 +2,7 @@ import { DefaultTheme, NavigationContainer, Theme } from '@react-navigation/nati
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
+import BootSplash from 'react-native-bootsplash';
 
 import CONFIG from '@/config';
 import { Routes } from '@/routes';
@@ -50,7 +51,12 @@ export default function ApplicationRoutes() {
   );
 
   return (
-    <NavigationContainer theme={navigationTheme}>
+    <NavigationContainer
+      theme={navigationTheme}
+      onReady={() => {
+        BootSplash.hide();
+      }}
+    >
       <RootStack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
         {screens}
       </RootStack.Navigator>

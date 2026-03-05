@@ -230,6 +230,20 @@ program
 
     setupIosDevSchemeAndConfigurations(mobileDirectory, styles);
 
+    const spinnerBootsplash = ora({
+      text: styles.info('Generating bootsplash assets...'),
+      spinner: 'dots',
+    }).start();
+
+    executeCommand(
+      mobileDirectory,
+      `npx react-native-bootsplash generate src/assets/images/logo.png --platforms=android,ios --background=ffffff --logo-width=100 --assets-output=src/assets/images/bootsplash --flavor=main`,
+      {
+        stdio: 'pipe',
+      },
+    );
+    spinnerBootsplash.succeed(styles.success('Bootsplash assets generated successfully'));
+
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
     console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('PROJECT CREATED SUCCESSFULLY') + styles.title('                       ║'));
@@ -441,6 +455,20 @@ program
     spinner4.succeed(styles.success('Mobile package.json updated successfully'));
 
     setupIosDevSchemeAndConfigurations(mobileDirectory, styles);
+
+    const spinnerBootsplash2 = ora({
+      text: styles.info('Generating bootsplash assets...'),
+      spinner: 'dots',
+    }).start();
+
+    executeCommand(
+      mobileDirectory,
+      `npx react-native-bootsplash generate src/assets/images/logo.png --platforms=android,ios --background=ffffff --logo-width=100 --assets-output=src/assets/images/bootsplash --flavor=main`,
+      {
+        stdio: 'pipe',
+      },
+    );
+    spinnerBootsplash2.succeed(styles.success('Bootsplash assets generated successfully'));
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));

@@ -67,6 +67,7 @@ export function KeyboardAwareScrollView(props: Props) {
       refreshControl={refreshControl}
       scrollEventThrottle={16}
       ScrollViewComponent={ScrollViewComponent}
+      showsVerticalScrollIndicator={false}
       style={style}
       onScroll={onScroll}
       {...rest}

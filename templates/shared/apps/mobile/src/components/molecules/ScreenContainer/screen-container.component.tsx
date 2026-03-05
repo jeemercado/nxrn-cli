@@ -81,7 +81,7 @@ export function ScreenContainer(props: Props) {
           <KeyboardAwareScrollView
             containerStyle={defaultContainerStyle}
             refreshControl={refreshControl as ReactElement<RefreshControlProps>}
-            scrollViewRef={scrollViewRef}
+            scrollViewRef={scrollViewRef as React.RefObject<RNScrollView>}
             onScroll={onScroll}
           >
             {children}
@@ -104,7 +104,7 @@ export function ScreenContainer(props: Props) {
         <KeyboardAwareScrollView
           containerStyle={defaultContainerStyle}
           refreshControl={refreshControl as ReactElement<RefreshControlProps>}
-          scrollViewRef={scrollViewRef}
+          scrollViewRef={scrollViewRef as React.RefObject<RNScrollView>}
           onScroll={onScroll}
         >
           {children}

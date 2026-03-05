@@ -5,6 +5,8 @@ import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import android.os.Bundle
+import com.swmansion.rnscreens.fragment.restoration.RNScreensFragmentFactory
+import com.zoontek.rnbootsplash.RNBootSplash
 import android.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -19,7 +21,9 @@ class MainActivity : ReactActivity() {
 
   //react-native-screens override
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(null);
+    supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()
+    RNBootSplash.init(this, R.style.BootTheme) // ⬅️ initialize the splash screen
+    super.onCreate(savedInstanceState)
 
     // 1) Let your content draw behind system bars (status + nav)
     WindowCompat.setDecorFitsSystemWindows(window, false)

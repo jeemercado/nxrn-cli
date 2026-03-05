@@ -103,7 +103,8 @@ SELECTED_DEVICE="${DEVICE_IDS[$SELECTED_INDEX]}"
 if [ "${DEVICE_TYPES[$SELECTED_INDEX]}" = "avd" ]; then
   echo ""
   echo "Booting AVD: $SELECTED_DEVICE..."
-  emulator -avd "$SELECTED_DEVICE" -no-snapshot-load &>/dev/null &
+  # Launch in a new session so it's fully detached from this script
+  perl -e 'use POSIX "setsid"; setsid(); exec("emulator", "-avd", $ARGV[0], "-no-snapshot-load")' "$SELECTED_DEVICE" </dev/null &>/dev/null &
 
   # Wait for device to come online
   echo "Waiting for device to boot..."

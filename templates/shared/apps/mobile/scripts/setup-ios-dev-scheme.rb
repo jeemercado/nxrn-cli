@@ -157,6 +157,24 @@ def upsert_info_plist_display_name(app_target, ios_dir, project_name)
   updated
 end
 
+def upsert_info_plist_encryption_flag(app_target, ios_dir, project_name)
+  paths = resolve_info_plist_paths(app_target, ios_dir, project_name)
+  updated = []
+
+  paths.each do |path|
+    next unless File.exist?(path)
+
+    plist = Xcodeproj::Plist.read_from_path(path) || {}
+    next if plist['ITSAppUsesNonExemptEncryption'] == false
+
+    plist['ITSAppUsesNonExemptEncryption'] = false
+    Xcodeproj::Plist.write_to_path(plist, path)
+    updated << "Info.plist ITSAppUsesNonExemptEncryption=false at #{path}"
+  end
+
+  updated
+end
+
 def update_scheme_configuration(doc, action_name, build_configuration)
   action = REXML::XPath.first(doc, "//#{action_name}")
   raise "Missing #{action_name} in source scheme." unless action
@@ -301,6 +319,81 @@ def upsert_firebase_environment_script_phase(app_target)
   phase_status
 end
 
+def upsert_podfile_node_require_and_permissions(podfile_path)
+  return :missing unless File.exist?(podfile_path)
+
+  content = File.read(podfile_path)
+  updated = content.dup
+  changes = []
+
+  # Step 1: Replace old inline require with node_require function if needed
+  unless updated.include?('def node_require(script)')
+    old_require_pattern = /# Resolve react_native_pods\.rb with node to allow for hoisting\nrequire Pod::Executable\.execute_command\('node', \['-p',\n\s*'require\.resolve\(\n\s*"react-native\/scripts\/react_native_pods\.rb",\n\s*\{paths: \[process\.argv\[1\]\]\},\n\s*\)', __dir__\]\)\.strip/m
+
+    node_require_block = <<~RUBY.chomp
+      def node_require(script)
+        # Resolve script with node to allow for hoisting
+        require Pod::Executable.execute_command('node', ['-p',
+          "require.resolve(
+            '\#{script}',
+            {paths: [process.argv[1]]},
+          )", __dir__]).strip
+      end
+
+      # Use it to require both react-native's and this package's scripts:
+      node_require('react-native/scripts/react_native_pods.rb')
+      node_require('react-native-permissions/scripts/setup.rb')
+    RUBY
+
+    if updated.match?(old_require_pattern)
+      updated.sub!(old_require_pattern, node_require_block)
+      changes << 'node_require function (replaced inline require)'
+    end
+  end
+
+  # Step 2: Add setup_permissions after prepare_react_native_project! if not present
+  unless updated.include?('setup_permissions')
+    permissions_block = <<~RUBY
+
+      # Uncomment the permissions you need
+      setup_permissions([
+        # 'AppTrackingTransparency',
+        # 'Bluetooth',
+        # 'Calendars',
+        # 'CalendarsWriteOnly',
+        # 'Camera',
+        # 'Contacts',
+        # 'FaceID',
+        # 'LocationAccuracy',
+        # 'LocationAlways',
+        # 'LocationWhenInUse',
+        # 'MediaLibrary',
+        # 'Microphone',
+        # 'Motion',
+        'Notifications',
+        # 'PhotoLibrary',
+        # 'PhotoLibraryAddOnly',
+        # 'Reminders',
+        # 'Siri',
+        # 'SpeechRecognition',
+        # 'StoreKit',
+      ])
+    RUBY
+
+    if updated.include?('prepare_react_native_project!')
+      updated.sub!(/prepare_react_native_project!\s*\n/) do |match|
+        "#{match}#{permissions_block}"
+      end
+      changes << 'setup_permissions block'
+    end
+  end
+
+  return :unchanged if updated == content
+
+  File.write(podfile_path, updated)
+  changes
+end
+
 ios_dir = File.join(Dir.pwd, 'ios')
 project_path = Dir.glob(File.join(ios_dir, '*.xcodeproj')).first
 raise 'Could not find an .xcodeproj under ios/.' unless project_path
@@ -330,6 +423,7 @@ changes.concat(upsert_product_bundle_identifier(app_target, base_bundle_identifi
 base_product_name = extract_base_product_name(app_target)
 changes.concat(upsert_product_name(app_target, base_product_name))
 changes.concat(upsert_info_plist_display_name(app_target, ios_dir, project_name))
+changes.concat(upsert_info_plist_encryption_flag(app_target, ios_dir, project_name))
 firebase_phase_status = upsert_firebase_environment_script_phase(app_target)
 changes << "Firebase plist run script #{firebase_phase_status}" unless firebase_phase_status == 'existing'
 
@@ -359,8 +453,14 @@ formatter.write(scheme_doc.root, output)
 output << "\n"
 File.write(dev_scheme_path, output)
 
-podfile_status = upsert_podfile_project_mapping(File.join(ios_dir, 'Podfile'), project_name)
+podfile_path = File.join(ios_dir, 'Podfile')
+podfile_status = upsert_podfile_project_mapping(podfile_path, project_name)
 changes << 'Podfile project mapping' if podfile_status == :updated
+
+node_require_status = upsert_podfile_node_require_and_permissions(podfile_path)
+if node_require_status.is_a?(Array)
+  node_require_status.each { |change| changes << "Podfile #{change}" }
+end
 
 puts 'Configured iOS build configurations and Dev scheme.'
 if changes.empty?
