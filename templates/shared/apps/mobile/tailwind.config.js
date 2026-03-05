@@ -39,6 +39,20 @@ module.exports = {
         2: '2 2 0%',
       },
       colors: {
+        white: '#ffffff',
+        background: '#0f1419',
+        disabled: '#6b7280',
+        divider: '#3a4556',
+        error: '#ef4444',
+        foreground: '#f8f9fa',
+        muted: '#e1e4e8',
+        overlay: '#1e2d3d',
+        placeholder: '#8b92a0',
+        sheet: '#1a2332',
+        subtitle: '#8b92a0',
+        success: '#22c55e',
+        surface: '#2a3544',
+        underlay: '#131a26',
         // https://uicolors.app/create
         gray: {
           50: '#f7f8f8',

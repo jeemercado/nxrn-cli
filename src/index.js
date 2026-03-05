@@ -16,7 +16,7 @@ import {
   setupIosDevSchemeAndConfigurations
 } from './utils/index.js';
 
-const version = '2.7.1';
+const version = '3.0.0';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -166,7 +166,8 @@ program
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
     copyDir(`${workspaceDirectory}/apps/mobile/scripts`, `apps/mobile/scripts`, 'shared');
-    
+    copyDir(`${workspaceDirectory}/patches`, `patches`, 'shared');
+
     if (!isFresh) {
       copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
       
@@ -243,6 +244,20 @@ program
       },
     );
     spinnerBootsplash.succeed(styles.success('Bootsplash assets generated successfully'));
+
+    const spinnerPostinstall = ora({
+      text: styles.info('Running postinstall...'),
+      spinner: 'dots',
+    }).start();
+
+    executeCommand(
+      workspaceDirectory,
+      `yarn postinstall`,
+      {
+        stdio: 'pipe',
+      },
+    );
+    spinnerPostinstall.succeed(styles.success('Postinstall completed successfully'));
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
@@ -392,7 +407,8 @@ program
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
     copyDir(`${workspaceDirectory}/apps/mobile/scripts`, `apps/mobile/scripts`, 'shared');
-    
+    copyDir(`${workspaceDirectory}/patches`, `patches`, 'shared');
+
     if (!isFresh) {
       copyDir(`${workspaceDirectory}/.vscode`, `.vscode`, 'shared');
       
@@ -469,6 +485,20 @@ program
       },
     );
     spinnerBootsplash2.succeed(styles.success('Bootsplash assets generated successfully'));
+
+    const spinnerPostinstall2 = ora({
+      text: styles.info('Running postinstall...'),
+      spinner: 'dots',
+    }).start();
+
+    executeCommand(
+      workspaceDirectory,
+      `yarn postinstall`,
+      {
+        stdio: 'pipe',
+      },
+    );
+    spinnerPostinstall2.succeed(styles.success('Postinstall completed successfully'));
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));

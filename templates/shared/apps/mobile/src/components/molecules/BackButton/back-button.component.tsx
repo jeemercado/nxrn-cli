@@ -51,7 +51,7 @@ export function BackButton(props: Props) {
       onPress={handleOnPress}
     >
       <View style={[tw`flex-1 items-center justify-center rounded-full`, style]}>
-        <ArrowLeftIcon style={tw`text-gray-950`} />
+        <ArrowLeftIcon style={tw`dark:text-foreground text-gray-900`} />
       </View>
     </TouchableOpacity>
   );

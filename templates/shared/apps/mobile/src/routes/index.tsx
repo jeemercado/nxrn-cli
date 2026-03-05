@@ -1,14 +1,13 @@
-import { DefaultTheme, NavigationContainer, Theme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer, Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
-import { StatusBar } from 'react-native';
+import React, { useMemo } from 'react';
 import BootSplash from 'react-native-bootsplash';
 
-import CONFIG from '@/config';
 import { Routes } from '@/routes';
 import PrivateRoutes from '@/routes/privateRoutes';
 import PublicRoutes from '@/routes/publicRoutes';
 import { screenOptions } from '@/routes/screen-options';
+import { useLocalStorageStore } from '@/stores';
 import { colors } from '@/tailwind';
 
 const RootStack = createNativeStackNavigator();
@@ -17,11 +16,19 @@ export const noAnimation = {
   animationEnabled: false,
 };
 
-const navigationTheme: Theme = {
+const lightNavigationTheme: Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: colors.gray[50],
+    background: colors.white,
+  },
+};
+
+const darkNavigationTheme: Theme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: colors.background,
   },
 };
 
@@ -30,15 +37,13 @@ export default function ApplicationRoutes() {
   // const isUserAuthenticated = useLocalStorageState((state) => !!state.accessToken);
   const isUserAuthenticated = false;
   const initialRouteName = isUserAuthenticated ? Routes.PRIVATE : Routes.PUBLIC;
+  const colorScheme = useLocalStorageStore((s) => s.colorScheme);
+  const isDark = colorScheme === 'dark';
 
-  useEffect(() => {
-    StatusBar.setHidden(false);
-    if (CONFIG.IS_ANDROID) {
-      StatusBar.setBackgroundColor('transparent');
-      StatusBar.setTranslucent(true);
-      StatusBar.setBarStyle('dark-content');
-    }
-  }, []);
+  const navigationTheme = useMemo(
+    () => (isDark ? darkNavigationTheme : lightNavigationTheme),
+    [isDark],
+  );
 
   // if (isLoading) {
   //   return <ScreenLoader />;

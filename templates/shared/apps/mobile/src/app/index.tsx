@@ -5,29 +5,34 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useDeviceContext } from 'twrnc';
 
 import { persistOptions, queryClient } from './query-client';
 
-import { StorageManager } from '@/components';
+import { AlertManager, StorageManager, ThemeManager, ToastManager } from '@/components';
 import ApplicationRoutes from '@/routes';
 import { tw } from '@/tailwind';
 import 'react-native-url-polyfill/auto';
 
-LogBox.ignoreLogs(['VirtualizedLists', 'onAnimatedValueUpdate']);
+LogBox.ignoreLogs([
+  'VirtualizedLists',
+  'onAnimatedValueUpdate',
+  'InteractionManager',
+  'This method is deprecated (as well as all React Native Firebase namespaced API)',
+]);
 
 function Application() {
-  useDeviceContext(tw, {
-    initialColorScheme: 'light',
-  });
-
   return (
     <GestureHandlerRootView style={tw`flex-1`}>
       <SafeAreaProvider>
         <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
           <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
             <StorageManager>
-              <ApplicationRoutes />
+              <>
+                <ThemeManager />
+                <ApplicationRoutes />
+                <AlertManager />
+                <ToastManager />
+              </>
             </StorageManager>
           </PersistQueryClientProvider>
         </KeyboardProvider>

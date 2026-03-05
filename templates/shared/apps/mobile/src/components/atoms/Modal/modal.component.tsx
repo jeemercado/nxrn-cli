@@ -30,6 +30,8 @@ function IOSModal(props: ModalProps) {
 
   return (
     <RNModal
+      hideModalContentWhileAnimating
+      useNativeDriver
       animationIn="fadeIn"
       animationInTiming={FADE_IN_DURATION}
       animationOut="fadeOut"

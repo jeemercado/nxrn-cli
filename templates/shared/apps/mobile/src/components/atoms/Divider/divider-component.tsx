@@ -9,5 +9,5 @@ type Props = DefaultComponentProps & {};
 export function Divider(props: Props) {
   const { style } = props;
 
-  return <View style={[tw`h-[1px] w-full bg-gray-200`, style]}></View>;
+  return <View style={[tw`dark:bg-divider h-[1px] w-full bg-gray-200`, style]}></View>;
 }

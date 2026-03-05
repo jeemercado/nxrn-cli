@@ -1,12 +1,9 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React, { ReactElement } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
   RefreshControlProps,
-  StatusBar,
-  StatusBarStyle,
   StyleProp,
   View,
   ViewStyle,
@@ -15,20 +12,15 @@ import { ScrollView as RNScrollView } from 'react-native-gesture-handler';
 import { Edge, SafeAreaProviderProps, SafeAreaView } from 'react-native-safe-area-context';
 
 import { KeyboardAwareScrollView } from '@/components';
-import CONFIG from '@/config';
 import { tw } from '@/tailwind';
 
 type Props = SafeAreaProviderProps & {
-  barStyle?: StatusBarStyle;
   scrollViewRef?: React.RefObject<RNScrollView | null>;
   containerStyle?: StyleProp<ViewStyle>;
   excludedEdges?: Edge[];
   extraBottomPadding?: number;
   hasScroll?: boolean;
   refreshControl?: ReactElement;
-  shouldShowStatusBar?: boolean;
-  shouldBeTranslucent?: boolean;
-  statusBarColor?: string;
   useSafeAreaView?: boolean;
   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 };
@@ -43,7 +35,6 @@ const safeAreaViewEdges: Edge[] = Platform.select({
 
 export function ScreenContainer(props: Props) {
   const {
-    barStyle = 'dark-content',
     children,
     containerStyle,
     excludedEdges = [],
@@ -52,20 +43,9 @@ export function ScreenContainer(props: Props) {
     onScroll,
     refreshControl,
     scrollViewRef,
-    shouldBeTranslucent = false,
-    shouldShowStatusBar = true,
-    statusBarColor = 'transparent',
     style,
     useSafeAreaView = true,
   } = props;
-  useFocusEffect(() => {
-    StatusBar.setHidden(!shouldShowStatusBar);
-    if (CONFIG.IS_ANDROID) {
-      StatusBar.setBackgroundColor(statusBarColor);
-      StatusBar.setTranslucent(!shouldBeTranslucent);
-      StatusBar.setBarStyle(barStyle);
-    }
-  });
 
   const defaultContainerStyle = [
     defaultStyle,
@@ -76,7 +56,7 @@ export function ScreenContainer(props: Props) {
 
   if (!useSafeAreaView) {
     return (
-      <View style={[tw`flex-1 bg-white`, style]}>
+      <View style={[tw`dark:bg-background flex-1 bg-white`, style]}>
         {hasScroll ? (
           <KeyboardAwareScrollView
             containerStyle={defaultContainerStyle}
@@ -99,7 +79,7 @@ export function ScreenContainer(props: Props) {
       : safeAreaViewEdges;
 
   return (
-    <SafeAreaView edges={edges} style={[tw`flex-1 bg-white`, style]}>
+    <SafeAreaView edges={edges} style={[tw`dark:bg-background flex-1 bg-white`, style]}>
       {hasScroll ? (
         <KeyboardAwareScrollView
           containerStyle={defaultContainerStyle}

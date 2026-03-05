@@ -24,6 +24,7 @@ export type BottomSheetProps = DefaultComponentProps & {
   enableDynamicSizing?: boolean;
   enablePanDownToClose?: boolean;
   handleComponent?: FC<BottomSheetHandleProps> | null;
+  hasScrollView?: boolean;
   onExpand?: () => void;
   sheetRef: RefObject<BottomSheetModal>;
   snapPoints?: string[];
@@ -83,6 +84,7 @@ export function BottomSheet(props: BottomSheetProps) {
     enableDynamicSizing = false,
     enablePanDownToClose = true,
     handleComponent = BottomSheetHandle,
+    hasScrollView = true,
     sheetRef,
     snapPoints = DEFAULT_SNAP_POINTS,
     style,
@@ -104,11 +106,11 @@ export function BottomSheet(props: BottomSheetProps) {
       ref={sheetRef}
       android_keyboardInputMode="adjustResize"
       backdropComponent={renderBackdrop}
-      backgroundStyle={[tw`bg-gray-50`, backgroundStyle]}
+      backgroundStyle={[tw`dark:bg-sheet bg-white`, backgroundStyle]}
       enableDynamicSizing={enableDynamicSizing}
       enablePanDownToClose={enablePanDownToClose}
       handleComponent={handleComponent}
-      handleIndicatorStyle={tw`bg-gray-50`}
+      handleIndicatorStyle={tw`dark:bg-divider bg-gray-300`}
       handleStyle={tw`rounded-tl-xl rounded-tr-xl`}
       keyboardBehavior="interactive"
       snapPoints={points}
@@ -120,12 +122,16 @@ export function BottomSheet(props: BottomSheetProps) {
         style,
       ]}
     >
-      <BottomSheetScrollView
-        contentContainerStyle={contentContainerStyle}
-        keyboardShouldPersistTaps="handled"
-      >
-        {children}
-      </BottomSheetScrollView>
+      {hasScrollView ? (
+        <BottomSheetScrollView
+          contentContainerStyle={contentContainerStyle}
+          keyboardShouldPersistTaps="handled"
+        >
+          {children}
+        </BottomSheetScrollView>
+      ) : (
+        children
+      )}
     </BottomSheetModal>
   );
 }

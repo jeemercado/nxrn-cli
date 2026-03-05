@@ -25,6 +25,7 @@
     "jotai-optics": "0.4.0",
     "jotai": "2.16.1",
     "lodash-es": "4.17.22",
+    "patch-package": "8.0.1",
     "react-hook-form": "7.56.4",
     "react-native-bootsplash": "7.0.2",
     "react-native-device-info": "15.0.1",

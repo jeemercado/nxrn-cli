@@ -64,7 +64,7 @@ export function OutlinedButton(props: Props) {
   return (
     <Button
       {...rest}
-      buttonStyle={tw`border-primary-500 border-2 bg-white`}
+      buttonStyle={tw`border-primary-500 border-2 bg-transparent`}
       textStyle={tw`text-primary-500`}
     />
   );

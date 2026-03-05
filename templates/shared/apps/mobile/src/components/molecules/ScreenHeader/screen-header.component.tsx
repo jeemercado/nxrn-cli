@@ -39,7 +39,7 @@ export function ScreenHeader(props: Props) {
         {extraActionComponent ? (
           extraActionComponent
         ) : (
-          <GearIcon height={25} style={tw`text-black`} width={25} />
+          <GearIcon height={25} style={tw`dark:text-foreground text-gray-900`} width={25} />
         )}
       </View>
     </TouchableOpacity>
@@ -51,7 +51,7 @@ export function ScreenHeader(props: Props) {
         {hasBackButton && <BackButton style={tw`z-10`} onPress={onBackPress} />}
         <Typography
           style={[
-            tw`text-primary-700 absolute inset-x-0 top-4 text-center text-xl font-medium`,
+            tw`dark:text-foreground absolute inset-x-0 top-4 text-center text-xl font-medium text-gray-900`,
             titleStyle,
           ]}
         >

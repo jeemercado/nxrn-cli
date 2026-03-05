@@ -11,6 +11,7 @@ import {
 import { DefaultNameInputProps } from './constants';
 
 import { CrossIcon } from '@/icons';
+import { useLocalStorageStore } from '@/stores';
 import {
   colors,
   defaultInputContainerStyle,
@@ -43,6 +44,7 @@ export function TextInput(props: TextInputProps) {
     value,
     ...extraProps
   } = props;
+  const colorScheme = useLocalStorageStore((s) => s.colorScheme);
   const [isClearButtonVisible, setIsClearButtonVisible] = useState<boolean>(false);
   const [isFocused, setFocused] = useState<boolean>(false);
 
@@ -81,6 +83,7 @@ export function TextInput(props: TextInputProps) {
     <View
       style={[
         defaultInputContainerStyle,
+        tw`dark:border-divider dark:bg-surface`,
         focusedInputStyle(isFocused),
         disabledInputStyle(isDisabled),
         style,
@@ -89,12 +92,13 @@ export function TextInput(props: TextInputProps) {
       <RNTextInput
         {...DefaultNameInputProps}
         ref={textInputRef}
+        cursorColor={colors.primary[400]}
         editable={!isDisabled}
         multiline={multiline}
         placeholder={placeholder}
-        placeholderTextColor={colors.gray[500]}
-        selectionColor={colors.primary}
-        style={[defaultInputTextStyle, textStyle]}
+        placeholderTextColor={colorScheme === 'dark' ? colors.placeholder : colors.gray[400]}
+        selectionColor={colors.primary[400]}
+        style={[defaultInputTextStyle, tw`dark:text-foreground`, textStyle]}
         value={value}
         onBlur={handleOnBlur}
         onChangeText={handleOnChangeText}
@@ -108,7 +112,7 @@ export function TextInput(props: TextInputProps) {
           testID="clear-button"
           onPress={handleOnClearPress}
         >
-          <CrossIcon style={tw`text-gray-400`} />
+          <CrossIcon style={tw`dark:text-subtitle text-gray-400`} />
         </Pressable>
       )}
     </View>

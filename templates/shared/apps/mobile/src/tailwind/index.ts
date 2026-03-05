@@ -60,13 +60,13 @@ export const errorContainerStyle = (err: boolean) => err && tw`border-red-600`;
 
 export const disabledInputStyle = (isDisabled: boolean) => isDisabled && tw`opacity-50`;
 
-export const focusedInputStyle = (isFocused: boolean) => isFocused && tw``;
+export const focusedInputStyle = (isFocused: boolean) => isFocused && tw`border-primary-400`;
 
 export const errorTextStyle = (err: boolean) => err && tw`text-red-600`;
 
-export const defaultInputContainerStyle = tw`ios:px-4 ios:py-3.5 android:py-1 android:px-3 android:min-h-[50px] flex-row rounded-xl border border-[#3a4556] bg-[#2a3544]`;
+export const defaultInputContainerStyle = tw`ios:px-4 ios:py-3.5 android:py-1 android:px-3 android:min-h-[50px] flex-row rounded-xl border border-gray-300 bg-white`;
 export const defaultInputTextStyle = [
-  tw`flex-1 font-normal text-[#f8f9fa]`,
+  tw`flex-1 font-normal text-gray-900`,
   CONFIG.IS_ANDROID ? { textAlignVertical: 'center' } : null,
 ];
 

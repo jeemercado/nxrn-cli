@@ -88,6 +88,7 @@ export function BottomSheetTextInput(props: BottomSheetTextInputProps) {
     <View
       style={[
         defaultInputContainerStyle,
+        tw`dark:border-divider dark:bg-surface`,
         focusedInputStyle(isFocused),
         disabledInputStyle(isDisabled),
         style,
@@ -100,8 +101,8 @@ export function BottomSheetTextInput(props: BottomSheetTextInputProps) {
         multiline={multiline}
         placeholder={placeholder}
         placeholderTextColor={colors.gray[500]}
-        selectionColor={colors.primary}
-        style={[defaultInputTextStyle, textStyle]}
+        selectionColor={colors.primary[400]}
+        style={[defaultInputTextStyle, tw`dark:text-foreground`, textStyle]}
         value={value}
         onBlur={(e) => handleOnBlur(e as NativeSyntheticEvent<TextInputFocusEventData>)}
         onChangeText={handleOnChangeText}
@@ -115,7 +116,7 @@ export function BottomSheetTextInput(props: BottomSheetTextInputProps) {
           testID="clear-button"
           onPress={handleOnClearPress}
         >
-          <CrossIcon />
+          <CrossIcon style={tw`text-subtitle`} />
         </Pressable>
       )}
     </View>

@@ -10,7 +10,12 @@ export function ScreenLoader(props: Props) {
   const { style } = props;
 
   return (
-    <View style={[tw`h-full w-full items-center justify-center bg-gray-50 p-8`, style]}>
+    <View
+      style={[
+        tw`dark:bg-background h-full w-full items-center justify-center bg-gray-50 p-8`,
+        style,
+      ]}
+    >
       <ActivityIndicator color={colors.primary[400]} />
     </View>
   );
