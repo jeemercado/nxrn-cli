@@ -62,7 +62,7 @@ export const removeFile = (filePath) => {
 export const addScriptsInRootPackageJson = (rootDir) => {
   const scripts = {
     "postinstall": "patch-package",
-    "doctor": "npx nx react-native doctor",
+    "doctor": "cd apps/mobile && npx @react-native-community/cli doctor",
     "android": "npx nx run-android mobile",
     "android:connect": "adb reverse tcp:8081 tcp:8081",
     "check-env:mobile": "./check-env.sh apps/mobile/.env apps/mobile/.env.template",
