@@ -69,7 +69,7 @@ SELECTED_ENV="${ENV_ARRAY[$PICKED_INDEX]}"
 # --- Safeguard: check for local URLs in .env ---
 APP_ENV="$SCRIPT_DIR/.env"
 if [ -f "$APP_ENV" ]; then
-  if grep -qiE 'localhost|192\.168\.' "$APP_ENV"; then
+  if grep -v '^\s*#' "$APP_ENV" | grep -qiE 'localhost|192\.168\.'; then
     echo ""
     echo "Deployment aborted: apps/mobile/.env contains a local URL (localhost or 192.168.*)."
     echo "Update your .env to point to the correct remote server before deploying."

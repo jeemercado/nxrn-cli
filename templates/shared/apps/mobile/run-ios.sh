@@ -1,5 +1,5 @@
 #!/bin/bash
-# Interactive iOS launcher - picks scheme and simulator
+# Interactive iOS launcher - picks scheme, device, or simulator
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
   echo "iOS builds only work on macOS"
@@ -32,7 +32,29 @@ done <<< "$SCHEMES"
 pick "Select a scheme:" "${SCHEME_ARRAY[@]}" --key "ios-scheme"
 SELECTED_SCHEME="${SCHEME_ARRAY[$PICKED_INDEX]}"
 
-# --- Simulator selection (booted first, then by name, then iOS version desc) ---
+# --- Device / Simulator selection ---
+# Collect physical devices (iPhone only) via devicectl
+PHYSICAL_DEVICES=$(xcrun devicectl list devices 2>/dev/null | python3 -c "
+import sys, re
+
+lines = sys.stdin.read().strip().split('\n')
+# Skip header lines (name, dashes)
+for line in lines[2:]:
+    if not line.strip():
+        continue
+    # Parse columns: Name, Hostname, Identifier, State, Model
+    parts = re.split(r'\s{3,}', line.strip())
+    if len(parts) < 5:
+        continue
+    name, hostname, identifier, state, model = parts[0], parts[1], parts[2], parts[3], parts[4]
+    if 'iPhone' not in model:
+        continue
+    if 'available' not in state:
+        continue
+    print(f'[Device] {name} ({model})|{identifier}')
+")
+
+# Collect simulators via simctl
 SIMULATORS=$(xcrun simctl list devices available -j 2>/dev/null | python3 -c "
 import sys, json, re
 
@@ -67,23 +89,56 @@ for is_booted, name, _, _, ver in devices_list:
     print(f'{prefix}{name} ({ver})')
 ")
 
-if [ -z "$SIMULATORS" ]; then
-  echo "No iOS simulators found"
+# Merge: physical devices first, then simulators
+ALL_DEVICES=""
+DEVICE_UDIDS=()
+
+if [ -n "$PHYSICAL_DEVICES" ]; then
+  while IFS= read -r line; do
+    display=$(echo "$line" | cut -d'|' -f1)
+    udid=$(echo "$line" | cut -d'|' -f2)
+    ALL_DEVICES+="$display"$'\n'
+    DEVICE_UDIDS+=("$udid")
+  done <<< "$PHYSICAL_DEVICES"
+fi
+
+PHYSICAL_COUNT=${#DEVICE_UDIDS[@]}
+
+if [ -n "$SIMULATORS" ]; then
+  while IFS= read -r line; do
+    ALL_DEVICES+="$line"$'\n'
+    DEVICE_UDIDS+=("")
+  done <<< "$SIMULATORS"
+fi
+
+# Remove trailing newline
+ALL_DEVICES=$(echo "$ALL_DEVICES" | sed '/^$/d')
+
+if [ -z "$ALL_DEVICES" ]; then
+  echo "No iOS devices or simulators found"
   exit 1
 fi
 
-SIM_ARRAY=()
+DEVICE_ARRAY=()
 while IFS= read -r line; do
-  SIM_ARRAY+=("$line")
-done <<< "$SIMULATORS"
+  DEVICE_ARRAY+=("$line")
+done <<< "$ALL_DEVICES"
 
-pick "Select a simulator:" "${SIM_ARRAY[@]}" --key "ios-simulator"
-SELECTED_SIM="${SIM_ARRAY[$PICKED_INDEX]}"
-# Strip [Booted] prefix to get "Name (version)"
-SIM_NAME=$(echo "$SELECTED_SIM" | sed 's/^\[Booted\] //')
+pick "Select a device:" "${DEVICE_ARRAY[@]}" --key "ios-device"
+SELECTED="${DEVICE_ARRAY[$PICKED_INDEX]}"
 
 echo ""
-echo "Running: scheme=$SELECTED_SCHEME simulator=$SIM_NAME"
-echo ""
 
-cd "$SCRIPT_DIR" && npx react-native run-ios --scheme="$SELECTED_SCHEME" --simulator="$SIM_NAME"
+if [[ "$SELECTED" == "[Device]"* ]]; then
+  # Physical device — use UDID
+  UDID="${DEVICE_UDIDS[$PICKED_INDEX]}"
+  echo "Running: scheme=$SELECTED_SCHEME device=$SELECTED (udid=$UDID)"
+  echo ""
+  cd "$SCRIPT_DIR" && npx react-native run-ios --scheme="$SELECTED_SCHEME" --udid="$UDID"
+else
+  # Simulator — strip [Booted] prefix to get "Name (version)"
+  SIM_NAME=$(echo "$SELECTED" | sed 's/^\[Booted\] //')
+  echo "Running: scheme=$SELECTED_SCHEME simulator=$SIM_NAME"
+  echo ""
+  cd "$SCRIPT_DIR" && npx react-native run-ios --scheme="$SELECTED_SCHEME" --simulator="$SIM_NAME"
+fi
