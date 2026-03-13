@@ -16,7 +16,7 @@ import {
   setupIosDevSchemeAndConfigurations
 } from './utils/index.js';
 
-const version = '3.0.2';
+const version = '3.0.3';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -164,6 +164,7 @@ program
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
+    copyFile(`${workspaceDirectory}/run-android.sh`, `run-android.sh`, 'shared');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
     copyDir(`${workspaceDirectory}/apps/mobile/scripts`, `apps/mobile/scripts`, 'shared');
     copyDir(`${workspaceDirectory}/patches`, `patches`, 'shared');
@@ -405,6 +406,7 @@ program
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
+    copyFile(`${workspaceDirectory}/run-android.sh`, `run-android.sh`, 'shared');
     copyFile(`${workspaceDirectory}/.ruby-version`, '.ruby-version', nxVersion, defaultNxVersion);
     copyDir(`${workspaceDirectory}/apps/mobile/scripts`, `apps/mobile/scripts`, 'shared');
     copyDir(`${workspaceDirectory}/patches`, `patches`, 'shared');

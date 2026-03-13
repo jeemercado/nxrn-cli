@@ -9,7 +9,7 @@
     "check-env": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./check-env.sh apps/mobile/.env apps/mobile/.env.template"
+        "command": "bash ./check-env.sh apps/mobile/.env apps/mobile/.env.template"
       }
     },
     "start": {
@@ -31,7 +31,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["pod-install"],
       "options": {
-        "command": "cd apps/mobile && ./run-ios.sh"
+        "command": "bash apps/mobile/run-ios.sh"
       }
     },
     "bundle-ios": {
@@ -48,7 +48,7 @@
       "executor": "nx:run-commands",
       "dependsOn": [],
       "options": {
-        "command": "cd apps/mobile && ./run-android.sh"
+        "command": "bash apps/mobile/run-android.sh"
       }
     },
     "build-android": {
@@ -69,13 +69,13 @@
     "pod-install": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/mobile && ./pod-install.sh"
+        "command": "bash apps/mobile/pod-install.sh"
       }
     },
     "pod-install:force": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/mobile && ./ios-only.sh 'cd ios && bundle install && bundle exec pod install --repo-update && cd .. && ./export-node-binary.sh'"
+        "command": "bash apps/mobile/ios-only.sh 'cd ios && bundle install && bundle exec pod install --repo-update && cd .. && ./export-node-binary.sh'"
       }
     },
     "bundle-android": {

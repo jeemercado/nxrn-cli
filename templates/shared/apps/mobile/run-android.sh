@@ -17,12 +17,22 @@ if [ -z "$INSTALL_TASKS" ]; then
   exit 1
 fi
 
+BASE_APP_ID=$(grep -m1 'applicationId' "$ANDROID_DIR/app/build.gradle" | sed -E 's/.*applicationId[[:space:]]+"([^"]+)".*/\1/' | tr -d '[:space:]')
+
 TASK_ARRAY=()
 DISPLAY_ARRAY=()
 while IFS= read -r line; do
   [ -z "$line" ] && continue
   TASK_ARRAY+=("$line")
-  DISPLAY_ARRAY+=("${line#install}")
+  VARIANT="${line#install}"
+  # Derive bundle ID for display
+  VARIANT_FLAVOR=$(echo "$VARIANT" | sed -E 's/(Debug|Release)$//' | tr '[:upper:]' '[:lower:]')
+  if [ "$VARIANT_FLAVOR" != "production" ] && [ -n "$VARIANT_FLAVOR" ]; then
+    VARIANT_BUNDLE_ID="${BASE_APP_ID}.${VARIANT_FLAVOR}"
+  else
+    VARIANT_BUNDLE_ID="$BASE_APP_ID"
+  fi
+  DISPLAY_ARRAY+=("$VARIANT ($VARIANT_BUNDLE_ID)")
 done <<< "$INSTALL_TASKS"
 
 pick "Select a build variant:" "${DISPLAY_ARRAY[@]}" --key "android-variant"
@@ -32,11 +42,14 @@ SELECTED_VARIANT="${SELECTED_TASK#install}"
 # Mode is the full variant name with first letter lowercased (e.g. devDebug, productionRelease)
 MODE="$(tr '[:upper:]' '[:lower:]' <<< "${SELECTED_VARIANT:0:1}")${SELECTED_VARIANT:1}"
 
-# Infer appIdSuffix from flavor (lowercase first char of variant minus build type)
+# Infer appIdSuffix and bundle ID from flavor
 FLAVOR=$(echo "$SELECTED_VARIANT" | sed -E 's/(Debug|Release)$//' | tr '[:upper:]' '[:lower:]')
 APP_ID_SUFFIX=""
 if [ "$FLAVOR" != "production" ] && [ -n "$FLAVOR" ]; then
   APP_ID_SUFFIX="$FLAVOR"
+  BUNDLE_ID="${BASE_APP_ID}.${APP_ID_SUFFIX}"
+else
+  BUNDLE_ID="$BASE_APP_ID"
 fi
 
 # --- Device selection (booted devices + shutdown AVDs) ---
@@ -120,7 +133,7 @@ if [ "${DEVICE_TYPES[$SELECTED_INDEX]}" = "avd" ]; then
 fi
 
 echo ""
-echo "Running: task=$SELECTED_TASK mode=$MODE device=$SELECTED_DEVICE"
+echo "Running: task=$SELECTED_TASK mode=$MODE device=$SELECTED_DEVICE bundleId=$BUNDLE_ID"
 echo ""
 
 RN_ARGS="--tasks=$SELECTED_TASK --mode=$MODE --device=$SELECTED_DEVICE"
