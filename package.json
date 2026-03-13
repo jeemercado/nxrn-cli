@@ -1,6 +1,6 @@
 {
   "name": "nx-react-native-cli",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "A react native starter (with NX) cli script",
   "type": "module",
   "files": [
