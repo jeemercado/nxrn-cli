@@ -44,7 +44,7 @@
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   
-  [factory startReactNativeWithModuleName:@"AppsMobile" 
+  [factory startReactNativeWithModuleName:@"main" 
                                   inWindow:self.window 
                            launchOptions:launchOptions];
   
