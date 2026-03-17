@@ -1,0 +1,16 @@
+diff --git a/node_modules/metro/src/Server.js b/node_modules/metro/src/Server.js
+index 1234567..abcdefg 100644
+--- a/node_modules/metro/src/Server.js
++++ b/node_modules/metro/src/Server.js
+@@ -499,8 +499,9 @@ class Server {
+     if (!reqHost) {
+       throw new Error("No host header was found.");
+     }
+-    const reqProtocol =
+-      req.headers["x-forwarded-proto"] ||
++    const rawProto = req.headers["x-forwarded-proto"];
++    const reqProtocol =
++      (rawProto ? rawProto.split(",")[0].trim() : null) ||
+       (req.socket?.encrypted === true ? "https" : "http");
+     const urlObj = new URL(req.url, reqProtocol + "://" + reqHost);
+     const formattedUrl = urlObj.toString();

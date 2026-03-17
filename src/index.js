@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 import { program } from 'commander';
 import inquirer from 'inquirer';
 import ora from 'ora';
+import { writeFileSync } from 'fs';
 import {
   addDevDepsToPackageJson,
   addScriptsInRootPackageJson,
@@ -17,7 +18,7 @@ import {
   removeFile,
 } from './utils/index.js';
 
-const version = '3.0.7';
+const version = '3.0.8';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -156,6 +157,7 @@ program
     
     copyFile(`${workspaceDirectory}/.gitignore`, '.ignorefile', 'shared');
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
+    copyFile(`${workspaceDirectory}/.npmrc`, '.npmrc', 'shared');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
     copyFile(`${workspaceDirectory}/run-android.sh`, `run-android.sh`, 'shared');
@@ -232,6 +234,8 @@ program
       process.exit(1);
     }
     spinnerParallel.succeed(styles.success('All finalization steps completed successfully'));
+
+    writeFileSync(`${workspaceDirectory}/.nxrnclirc`, JSON.stringify({ version }, null, 2) + '\n');
 
     const elapsedMs = Date.now() - startTime;
     const elapsedMin = Math.floor(elapsedMs / 60000);
@@ -374,6 +378,7 @@ program
     
     copyFile(`${workspaceDirectory}/.gitignore`, '.ignorefile', 'shared');
     copyFile(`${workspaceDirectory}/.nvmrc`, '.nvmrc', 'shared');
+    copyFile(`${workspaceDirectory}/.npmrc`, '.npmrc', 'shared');
     copyFile(`${workspaceDirectory}/check-env.sh`, `check-env.sh`, 'shared');
     copyFile(`${workspaceDirectory}/clean-generated-outputs.sh`, `clean-generated-outputs.sh`, 'shared');
     copyFile(`${workspaceDirectory}/run-android.sh`, `run-android.sh`, 'shared');
@@ -450,6 +455,8 @@ program
       process.exit(1);
     }
     spinnerParallel2.succeed(styles.success('All finalization steps completed successfully'));
+
+    writeFileSync(`${workspaceDirectory}/.nxrnclirc`, JSON.stringify({ version }, null, 2) + '\n');
 
     const elapsedMs = Date.now() - startTime;
     const elapsedMin = Math.floor(elapsedMs / 60000);
