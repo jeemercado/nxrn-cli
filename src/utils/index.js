@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync, exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import ora from 'ora';
@@ -11,6 +11,18 @@ export function getDirName() {
 
 export const executeCommand = (dir, command) => {
   execSync(`cd ${dir} && ${command}`, { stdio: 'inherit' });
+};
+
+export const executeCommandAsync = (dir, command) => {
+  return new Promise((resolve, reject) => {
+    exec(`cd ${dir} && ${command}`, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve({ stdout, stderr });
+    });
+  });
 };
 
 export const copyFile = (destinationPath, fileName, version, defaultVersion) => {
@@ -57,6 +69,13 @@ export const removeFile = (filePath) => {
       return;
     }
   });
+};
+
+export const addDevDepsToPackageJson = (rootDir, deps) => {
+  const packageJsonPath = path.join(rootDir, 'package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  packageJson.devDependencies = { ...packageJson.devDependencies, ...deps };
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };
 
 export const addScriptsInRootPackageJson = (rootDir) => {

@@ -8,10 +8,10 @@
     "@react-native-community/cli-platform-android": "20.0.0",
     "@react-native-community/cli-platform-ios": "20.0.0",
     "@react-native-community/cli": "20.0.0",
-    "@react-native/babel-preset": "0.83.1",
-    "@react-native/eslint-config": "0.83.1",
-    "@react-native/metro-config": "0.83.1",
-    "@react-native/typescript-config": "0.83.1",
+    "@react-native/babel-preset": "0.83.4",
+    "@react-native/eslint-config": "0.83.4",
+    "@react-native/metro-config": "0.83.4",
+    "@react-native/typescript-config": "0.83.4",
     "@swc-node/register": "~1.8.0",
     "@tanstack/eslint-plugin-query": "5.91.2",
     "@testing-library/jest-native": "5.4.3",
@@ -48,9 +48,11 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prettier": "3.3.2",
     "react-native-dotenv": "3.4.11",
+    "react-native-asset": "2.1.1",
     "react-native-svg-transformer": "1.3.0",
     "react-native-svg": "15.15.1",
     "react-test-renderer": "19.2.0",
+    "nx-react-native-rename": "latest",
     "typescript": "5.8.3"
   }
 } 

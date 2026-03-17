@@ -5,6 +5,7 @@ echo "Cleaning generated outputs..."
 
 root_node_modules_path="node_modules"
 app_rn_name="mobile"
+mobile_node_modules_path="apps/$app_rn_name/node_modules"
 app_rn_android_gradle_path="apps/$app_rn_name/android/.gradle"
 app_rn_android_build_path="apps/$app_rn_name/android/build"
 app_rn_android_cxx_path="apps/$app_rn_name/android/app/.cxx"
@@ -18,6 +19,9 @@ rm -rf "$root_build_path"
 
 echo "Deleting root $root_node_modules_path..."
 rm -rf "$root_node_modules_path"
+
+echo "Deleting $mobile_node_modules_path..."
+rm -rf "$mobile_node_modules_path"
 
 echo "Deleting $app_rn_android_build_path..."
 rm -rf "$app_rn_android_build_path"

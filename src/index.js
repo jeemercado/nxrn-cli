@@ -6,17 +6,18 @@ import { program } from 'commander';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import {
+  addDevDepsToPackageJson,
   addScriptsInRootPackageJson,
   copyDir,
   copyFile,
   disableNxTui,
   executeCommand,
+  executeCommandAsync,
   removeDir,
   removeFile,
-  setupIosDevSchemeAndConfigurations
 } from './utils/index.js';
 
-const version = '3.0.5';
+const version = '3.0.7';
 const defaultNxVersion = '21.2.2';
 const styles = {
   title: chalk.bold.cyan,
@@ -68,7 +69,8 @@ program
   .option('--skip-configs', 'Skip copying prettier, eslint, and husky configs')
   .action(async (workspace_name, bundle_id, options) => {
     displayBanner();
-    
+    const startTime = Date.now();
+
     if (!workspace_name) {
       const result = await inquirer.prompt([
         {
@@ -124,33 +126,25 @@ program
       color: 'cyan'
     }).start();
 
-    const addCommand = packageManager === 'npm' 
-      ? `npm install --save-dev @nx/react-native@${nxVersion} --ignore-scripts`
-      : `yarn add -D @nx/react-native@${nxVersion} @nx/eslint-plugin@${nxVersion} eslint-plugin-jsx-a11y --ignore-scripts`;
-    
-    executeCommand(workspaceDirectory, addCommand, {
-      stdio: 'inherit',
-    });
-    executeCommand(
-      workspaceDirectory,
-      `npx nx g @nx/react-native:app apps/mobile --bundler vite --install false --skip-nx-cache`,
-      {
-        stdio: 'inherit',
-      },
-    );
-
+    // Merge all deps into package.json before installing to avoid multiple install cycles
+    const nxDevDeps = packageManager === 'npm'
+      ? { [`@nx/react-native`]: nxVersion }
+      : { [`@nx/react-native`]: nxVersion, [`@nx/eslint-plugin`]: nxVersion, 'eslint-plugin-jsx-a11y': 'latest' };
+    addDevDepsToPackageJson(workspaceDirectory, nxDevDeps);
     addScriptsInRootPackageJson(workspaceDirectory);
-    
+
+    // Single install for all dependencies (workspace + RN + template deps)
     if (!skipInstall) {
       const installCommand = packageManager === 'npm' ? 'npm install' : 'yarn install';
-      executeCommand(
-        workspaceDirectory,
-        installCommand,
-        { stdio: 'inherit' },
-      );
+      executeCommand(workspaceDirectory, installCommand);
     } else {
       console.log(styles.warning(`Skipping ${packageManager} install (--skip-install flag set)`));
     }
+
+    executeCommand(
+      workspaceDirectory,
+      `npx nx g @nx/react-native:app apps/mobile --bundler vite --install false --skip-nx-cache`,
+    );
 
     spinner2.succeed(styles.success('React Native dependencies installed successfully'));
 
@@ -199,73 +193,58 @@ program
     );
 
     spinner3.succeed(styles.success('Project configuration completed'));
-    
-    const spinner4 = ora({
-      text: 'Linking assets...',
-      color: 'cyan'
-    }).start();
-    
-    executeCommand(
-      mobileDirectory,
-      `npx react-native-asset`,
-      {
-        stdio: 'inherit',
-      },
-    );
-    
-    spinner4.succeed(styles.success('Assets linked successfully'));
 
     console.log(`\n${styles.step(4)} ${styles.emoji.code} ${styles.success('Finalizing setup')}`);
-    const spinner5 = ora({
-      text: 'Renaming app...',
+    const spinnerParallel = ora({
+      text: 'Running finalization steps...',
       color: 'cyan'
     }).start();
 
-    executeCommand(
-      mobileDirectory,
-      `npx nx-react-native-rename@latest "${workspace_name}" -b "${bundle_id}" --skipGitStatusCheck --exclude "package.json"`,
-      {
-        stdio: 'inherit',
-      },
-    );
-    spinner5.succeed(styles.success('Mobile package.json updated successfully'));
+    // Start bundle install early — it only installs gems, doesn't touch the project
+    const bundleReady = executeCommandAsync(mobileDirectory, 'bundle check || bundle install');
 
-    setupIosDevSchemeAndConfigurations(mobileDirectory, styles);
+    const results = await Promise.allSettled([
+      // Chain A: iOS-project steps must be sequential (they all modify Xcode project/plist)
+      (async () => {
+        await executeCommandAsync(
+          mobileDirectory,
+          `npx nx-react-native-rename@latest "${workspace_name}" -b "${bundle_id}" --skipGitStatusCheck --exclude "package.json"`,
+        );
+        await executeCommandAsync(mobileDirectory, `npx react-native-asset`);
+        await executeCommandAsync(
+          mobileDirectory,
+          `npx react-native-bootsplash generate src/assets/images/logo.png --platforms=android,ios --background=ffffff --logo-width=100 --assets-output=src/assets/images/bootsplash --flavor=main`,
+        );
+        // iOS setup needs both bundle install AND the above steps done
+        await bundleReady;
+        await executeCommandAsync(mobileDirectory, 'bundle exec ruby ./scripts/setup-ios-dev-scheme.rb');
+      })(),
+      // Chain B: postinstall only touches node_modules — safe to run in parallel
+      executeCommandAsync(workspaceDirectory, `yarn postinstall`),
+    ]);
 
-    const spinnerBootsplash = ora({
-      text: styles.info('Generating bootsplash assets...'),
-      spinner: 'dots',
-    }).start();
+    const failed = results.filter((r) => r.status === 'rejected');
+    if (failed.length > 0) {
+      spinnerParallel.fail(styles.error('Some finalization steps failed'));
+      for (const f of failed) {
+        console.error(styles.error(f.reason?.message || f.reason));
+      }
+      process.exit(1);
+    }
+    spinnerParallel.succeed(styles.success('All finalization steps completed successfully'));
 
-    executeCommand(
-      mobileDirectory,
-      `npx react-native-bootsplash generate src/assets/images/logo.png --platforms=android,ios --background=ffffff --logo-width=100 --assets-output=src/assets/images/bootsplash --flavor=main`,
-      {
-        stdio: 'pipe',
-      },
-    );
-    spinnerBootsplash.succeed(styles.success('Bootsplash assets generated successfully'));
-
-    const spinnerPostinstall = ora({
-      text: styles.info('Running postinstall...'),
-      spinner: 'dots',
-    }).start();
-
-    executeCommand(
-      workspaceDirectory,
-      `yarn postinstall`,
-      {
-        stdio: 'pipe',
-      },
-    );
-    spinnerPostinstall.succeed(styles.success('Postinstall completed successfully'));
+    const elapsedMs = Date.now() - startTime;
+    const elapsedMin = Math.floor(elapsedMs / 60000);
+    const elapsedSec = Math.floor((elapsedMs % 60000) / 1000);
+    const elapsedStr = elapsedMin > 0 ? `${elapsedMin}m ${elapsedSec}s` : `${elapsedSec}s`;
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
     console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('PROJECT CREATED SUCCESSFULLY') + styles.title('                       ║'));
     console.log(styles.title('╚════════════════════════════════════════════════════════╝'));
     console.log('\n');
-    
+
+    console.log(`${styles.emoji.check} ${styles.info(`Done in ${styles.highlight(elapsedStr)}`)}`);
     console.log(styles.subtitle('📋 NEXT STEPS:'));
     const serveCommand = packageManager === 'npm' ? 'npm run serve:mobile' : 'yarn serve:mobile';
     console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command(serveCommand)}`);
@@ -283,7 +262,8 @@ program
   .option('--skip-configs', 'Skip copying prettier, eslint, and husky configs')
   .action(async (app_name, bundle_id, options) => {
     displayBanner();
-    
+    const startTime = Date.now();
+
     const currentPwd = process.cwd();
     
     // Check if we're in an NX workspace
@@ -366,33 +346,23 @@ program
       color: 'cyan'
     }).start();
 
-    const addCommandForAdd = packageManager === 'npm' 
-      ? `npm install --save-dev @nx/react-native@${nxVersion} --ignore-scripts --ignore-workspace-root-check`
-      : `yarn add -D @nx/react-native@${nxVersion} --ignore-scripts --ignore-workspace-root-check`;
-    
-    executeCommand(workspaceDirectory, addCommandForAdd, {
-      stdio: 'inherit',
-    });
-    executeCommand(
-      workspaceDirectory,
-      `npx nx g @nx/react-native:app apps/mobile --bundler vite --install false --skip-nx-cache`,
-      {
-        stdio: 'inherit',
-      },
-    );
-
+    // Merge all deps into package.json before installing to avoid multiple install cycles
+    const nxDevDepsForAdd = { [`@nx/react-native`]: nxVersion };
+    addDevDepsToPackageJson(workspaceDirectory, nxDevDepsForAdd);
     addScriptsInRootPackageJson(workspaceDirectory);
-    
+
+    // Single install for all dependencies
     if (!skipInstall) {
       const installCommandForAdd = packageManager === 'npm' ? 'npm install' : 'yarn install';
-      executeCommand(
-        workspaceDirectory,
-        installCommandForAdd,
-        { stdio: 'inherit' },
-      );
+      executeCommand(workspaceDirectory, installCommandForAdd);
     } else {
       console.log(styles.warning(`Skipping ${packageManager} install (--skip-install flag set)`));
     }
+
+    executeCommand(
+      workspaceDirectory,
+      `npx nx g @nx/react-native:app apps/mobile --bundler vite --install false --skip-nx-cache`,
+    );
 
     spinner1.succeed(styles.success('React Native dependencies installed successfully'));
 
@@ -441,73 +411,58 @@ program
     );
 
     spinner2.succeed(styles.success('Project configuration completed'));
-    
-    const spinner3 = ora({
-      text: 'Linking assets...',
-      color: 'cyan'
-    }).start();
-    
-    executeCommand(
-      mobileDirectory,
-      `npx react-native-asset`,
-      {
-        stdio: 'inherit',
-      },
-    );
-    
-    spinner3.succeed(styles.success('Assets linked successfully'));
 
     console.log(`\n${styles.step(3)} ${styles.emoji.code} ${styles.success('Finalizing setup')}`);
-    const spinner4 = ora({
-      text: 'Renaming app...',
+    const spinnerParallel2 = ora({
+      text: 'Running finalization steps...',
       color: 'cyan'
     }).start();
 
-    executeCommand(
-      mobileDirectory,
-      `npx nx-react-native-rename@latest "${app_name}" -b "${bundle_id}" --skipGitStatusCheck --exclude "package.json"`,
-      {
-        stdio: 'inherit',
-      },
-    );
-    spinner4.succeed(styles.success('Mobile package.json updated successfully'));
+    // Start bundle install early — it only installs gems, doesn't touch the project
+    const bundleReady2 = executeCommandAsync(mobileDirectory, 'bundle check || bundle install');
 
-    setupIosDevSchemeAndConfigurations(mobileDirectory, styles);
+    const results2 = await Promise.allSettled([
+      // Chain A: iOS-project steps must be sequential (they all modify Xcode project/plist)
+      (async () => {
+        await executeCommandAsync(
+          mobileDirectory,
+          `npx nx-react-native-rename@latest "${app_name}" -b "${bundle_id}" --skipGitStatusCheck --exclude "package.json"`,
+        );
+        await executeCommandAsync(mobileDirectory, `npx react-native-asset`);
+        await executeCommandAsync(
+          mobileDirectory,
+          `npx react-native-bootsplash generate src/assets/images/logo.png --platforms=android,ios --background=ffffff --logo-width=100 --assets-output=src/assets/images/bootsplash --flavor=main`,
+        );
+        // iOS setup needs both bundle install AND the above steps done
+        await bundleReady2;
+        await executeCommandAsync(mobileDirectory, 'bundle exec ruby ./scripts/setup-ios-dev-scheme.rb');
+      })(),
+      // Chain B: postinstall only touches node_modules — safe to run in parallel
+      executeCommandAsync(workspaceDirectory, `yarn postinstall`),
+    ]);
 
-    const spinnerBootsplash2 = ora({
-      text: styles.info('Generating bootsplash assets...'),
-      spinner: 'dots',
-    }).start();
+    const failed2 = results2.filter((r) => r.status === 'rejected');
+    if (failed2.length > 0) {
+      spinnerParallel2.fail(styles.error('Some finalization steps failed'));
+      for (const f of failed2) {
+        console.error(styles.error(f.reason?.message || f.reason));
+      }
+      process.exit(1);
+    }
+    spinnerParallel2.succeed(styles.success('All finalization steps completed successfully'));
 
-    executeCommand(
-      mobileDirectory,
-      `npx react-native-bootsplash generate src/assets/images/logo.png --platforms=android,ios --background=ffffff --logo-width=100 --assets-output=src/assets/images/bootsplash --flavor=main`,
-      {
-        stdio: 'pipe',
-      },
-    );
-    spinnerBootsplash2.succeed(styles.success('Bootsplash assets generated successfully'));
-
-    const spinnerPostinstall2 = ora({
-      text: styles.info('Running postinstall...'),
-      spinner: 'dots',
-    }).start();
-
-    executeCommand(
-      workspaceDirectory,
-      `yarn postinstall`,
-      {
-        stdio: 'pipe',
-      },
-    );
-    spinnerPostinstall2.succeed(styles.success('Postinstall completed successfully'));
+    const elapsedMs = Date.now() - startTime;
+    const elapsedMin = Math.floor(elapsedMs / 60000);
+    const elapsedSec = Math.floor((elapsedMs % 60000) / 1000);
+    const elapsedStr = elapsedMin > 0 ? `${elapsedMin}m ${elapsedSec}s` : `${elapsedSec}s`;
 
     console.log('\n');
     console.log(styles.title('╔════════════════════════════════════════════════════════╗'));
     console.log(styles.title('║  ') + styles.emoji.rocket + ' ' + styles.success('REACT NATIVE ADDED SUCCESSFULLY') + styles.title('                 ║'));
     console.log(styles.title('╚════════════════════════════════════════════════════════╝'));
     console.log('\n');
-    
+
+    console.log(`${styles.emoji.check} ${styles.info(`Done in ${styles.highlight(elapsedStr)}`)}`);
     console.log(styles.subtitle('📋 NEXT STEPS:'));
     const serveCommandForAdd = packageManager === 'npm' ? 'npm run serve:mobile' : 'yarn serve:mobile';
     console.log(`${styles.emoji.star} ${styles.info('Start your project:')} ${styles.command(serveCommandForAdd)}`);
