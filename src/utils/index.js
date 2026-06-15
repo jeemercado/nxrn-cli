@@ -112,6 +112,26 @@ export const addScriptsInRootPackageJson = (rootDir) => {
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };
 
+export const configurePnpm = (rootDir) => {
+  const npmrcPath = path.join(rootDir, '.npmrc');
+  const pnpmSettings = [
+    'shamefully-hoist=true',
+    'strict-peer-dependencies=false',
+    'node-linker=hoisted',
+  ];
+
+  let contents = '';
+  if (fs.existsSync(npmrcPath)) {
+    contents = fs.readFileSync(npmrcPath, 'utf8');
+  }
+
+  const linesToAdd = pnpmSettings.filter((line) => !contents.includes(line.split('=')[0]));
+  if (linesToAdd.length > 0) {
+    const separator = contents.length > 0 && !contents.endsWith('\n') ? '\n' : '';
+    fs.writeFileSync(npmrcPath, contents + separator + linesToAdd.join('\n') + '\n');
+  }
+};
+
 export const disableNxTui = (workspaceDirectory) => {
   const nxJsonPath = path.join(workspaceDirectory, 'nx.json');
   if (!fs.existsSync(nxJsonPath)) {
